@@ -40,7 +40,6 @@ body {
   padding: 0;
 }
 
-
 .under-header .sort {
   position: relative;
 }
@@ -102,11 +101,9 @@ body {
   background: rgba(28, 29, 34, 0.06);
 }
 .sort-option.active {
-
   background: rgba(28, 29, 34, 0.08);
 }
 .sort-option.active::after {
-
   content: "✓";
   position: absolute;
   right: 0.8rem;
@@ -242,6 +239,42 @@ ul {
 
 
 */
+
+.task-form__input,
+.task-form__textarea,
+.task-form__select {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  font-size: 1.3rem;
+  color: var(--text-first-color);
+  background: var(--primery-color);
+  border: 0.1rem solid rgba(28, 29, 34, 0.12);
+  border-radius: 0.8rem;
+  outline: none;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.task-form__input:focus,
+.task-form__textarea:focus,
+.task-form__select:focus {
+  border-color: rgba(28, 29, 34, 0.2);
+  box-shadow: 0 0 0 0.3rem rgba(28, 29, 34, 0.06);
+}
+
+.task-form__select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231C1D22' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 1.4rem;
+  padding-right: 3rem;
+}
+
+select.task-form__select option {
+  padding: 0.6rem 1rem;
+}
 
 .panel {
   padding-left: 7.5rem;
@@ -511,14 +544,12 @@ ul {
   margin-bottom: 1rem;
 }
 
-
 .labe__account {
   font-family: "Exo2-SemiBold";
   font-size: 1.2rem;
   color: var(--text-first-color);
   margin-bottom: 0.4rem;
 }
-
 
 .form-panel-account.edit-mode .account-input {
   display: block;
@@ -745,7 +776,6 @@ ul {
   object-fit: cover;
 }
 
-
 .nav__item--profile {
   cursor: pointer;
 }
@@ -757,7 +787,6 @@ ul {
   gap: 0.5rem;
   flex-direction: row-reverse;
 }
-
 
 .date-picker {
   display: none;
@@ -775,7 +804,6 @@ ul {
   position: relative;
   cursor: pointer;
 }
-
 
 .calendar {
   width: 22rem;
@@ -1462,7 +1490,6 @@ ul {
   gap: 2rem;
 }
 
-
 .task--form {
   background: var(--primery-color);
   border: 0.1rem solid rgba(28, 29, 34, 0.08);
@@ -1556,7 +1583,6 @@ ul {
   transform: translateY(1px);
 }
 
-
 .add-task {
   display: inline-flex;
   align-items: center;
@@ -1601,7 +1627,6 @@ ul {
 .add-task:active {
   transform: translateY(1px);
 }
-
 
 .content .content__items:first-child .add-task {
   cursor: pointer;

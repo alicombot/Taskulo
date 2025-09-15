@@ -7,4 +7,5 @@ app_name = 'task'
 urlpatterns = [
     path('', views.index, name='index'),
     path("create-task/", views.create_task, name="create_task"),
+    path("update-task/<int:task_id>/", views.update_task, name="update_task"),
 ]
