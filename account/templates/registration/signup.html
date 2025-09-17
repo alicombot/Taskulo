@@ -1,0 +1,91 @@
+{% extends  'base/index.html' %}
+{% load static %}
+{% block title %}
+	SingUp
+{% endblock %}
+{% block content %}
+    <main class="main" style="background:#f3f6fd; min-height: calc(100vh - 72px);">
+        <div class="container" style="display:flex; align-items:center; justify-content:center; padding:4rem 0;">
+            <div style="background:#fff; width:100%; max-width:44rem; border-radius:1.6rem; padding:2.4rem; box-shadow:0 10px 30px rgba(0,0,0,0.06);">
+                <div class="section-head" style="margin-bottom:1.5rem;">
+                    <h3 class="section-title" style="width:auto;">Create your account</h3>
+                    <div class="section-line"></div>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="account-field">
+                        <label class="labe__account" for="{{ form.name.id_for_label }}">Name*</label>
+                        <input name="{{ form.name.html_name }}" id="{{ form.name.id_for_label }}" type="text"
+                               class="panel-account__input" placeholder="Enter your name"
+                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
+                    </div>
+                    <div class="account-field">
+                        <label class="labe__account" for="{{ form.last_name.id_for_label }}">Last name
+                            (optional)</label>
+                        <input name="{{ form.last_name.html_name }}" id="{{ form.last_name.id_for_label }}" type="text"
+                               class="panel-account__input" placeholder="Enter your last name"
+                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
+                    </div>
+                    <div class="account-field">
+                        <label class="labe__account" for="{{ form.email.id_for_label }}">Email*</label>
+                        <input name="{{ form.email.html_name }}" id="email" type="email" class="panel-account__input"
+                               placeholder="Enter your email"
+                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
+
+                    </div>
+                    {% if form.email.errors %}
+                        <div id="infoBox" class="info-box"
+                             style="display:block; background:#d1ecf1; border:1px solid #bee5eb; border-radius:0.8rem; padding:1.2rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+                            <div class="info-header" style="display:flex; align-items:center; margin-bottom:0.8rem;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                     style="margin-right:0.8rem; color:#17a2b8;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+                                          fill="currentColor"/>
+                                </svg>
+                                <h4 style="margin:0; font-size:1.4rem; color:#17a2b8;">{{ form.email.errors }}</h4>
+                            </div>
+                            <div id="infoMessages" class="info-messages"
+                                 style="font-size:1.2rem; color:#0c5460; line-height:1.5;">
+                                <!-- Info messages will be displayed here -->
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="account-field">
+                        <label class="labe__account" for="{{ form.password.id_for_label }}">Password*</label>
+                        <input name="{{ form.password.html_name }}" id="password1" type="password"
+                               class="panel-account__input" placeholder="Create a password"
+                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
+                    </div>
+                    <div class="account-field">
+                        <label class="labe__account" for="{{ form.password2.id_for_label }}">Confirm password*</label>
+                        <input name="{{ form.password2.html_name }}" id="password2" type="password"
+                               class="panel-account__input" placeholder="Confirm your password"
+                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
+                    </div>
+                    {% if form.non_field_errors %}
+                        <div id="warningBox" class="warning-box"
+                             style="display:block; background:#fff3cd; border:1px solid #ffeaa7; border-radius:0.8rem; padding:1.2rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+                            <div class="warning-header" style="display:flex; align-items:center; margin-bottom:0.8rem;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                     style="margin-right:0.8rem; color:#f39c12;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                                          fill="currentColor"/>
+                                </svg>
+                                <h4 style="margin:0; font-size:1.4rem; color:#f39c12;">{{ form.non_field_errors }}</h4>
+                            </div>
+                            <div id="warningMessages" class="warning-messages"
+                                 style="font-size:1.2rem; color:#d68910; line-height:1.5;">
+                                <!-- Warning messages will be displayed here -->
+                            </div>
+                        </div>
+                    {% endif %}
+                    <button class="start-planing__btn" type="submit" style="width:100%;">Create account</button>
+
+                </form>
+                <p class="section-caption" style="width:auto; text-align:center; margin-top:1.5rem;">Already have an
+                    account? <a href="{% url 'account:user_login' %}" style="color:#775ee9;">Login</a></p>
+            </div>
+        </div>
+    </main>
+{% endblock %}

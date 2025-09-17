@@ -1,17 +1,22 @@
 {% load static %}
 <header class="header">
     <div class="nav">
-        <h2 class="nav__title">Welcome back, Vincent👋</h2>
+        <h2 class="nav__title">Welcome back, {{ user.first_name }}👋</h2>
 
         <div class="nav__items">
             <div class="nav__item--profile">
-                <img
+                {% if user.photo %}
+                    <img
                         class="profile__image"
-                        src="{% static 'images/profile.png' %}"
+                        src="{{ user.photo.url }}"
                         alt="profile"
                         width="78"
                         height="52"
+                        id="avatar-header"
                 />
+                {% else %}
+                    <img src="{% static 'images/profile.png' %}" alt="profile" width="78" height="52" class="profile__image">
+                {% endif %}
             </div>
 
             <div
@@ -162,7 +167,7 @@
                                     class="size-6"
                             >
                                 <path
-                                        stroke-linecap="round"
+                                        stroke-linecap="round"fim
                                         stroke-linejoin="round"
                                         d="M6 18 18 6M6 6l12 12"
                                 />

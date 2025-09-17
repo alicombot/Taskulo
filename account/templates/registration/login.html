@@ -1,74 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="icon" href="./images/svg_icon/logo.svg">
-    <link rel="stylesheet" href="./styles/normalize.css">
-    <link rel="stylesheet" href="./styles/gird.css">
-    <link rel="stylesheet" href="./styles/fonts.css">
-    <link rel="stylesheet" href="./styles/landing-page.css">
-    <link rel="stylesheet" href="./styles/responsive.css">
-</head>
-<body>
-<header class="header">
-    <div class="container">
-        <nav class="nav">
-            <div class="nav__logo">
-                ToDo-List
-                <svg width="24" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M24 8.88887L14 4V5.46663L22.5 9.62219L14 13.7777V26L24 21.1111V8.88887Z" fill="white"/>
-                    <path d="M0 17.1111L10 22V20.5334L1.49996 16.3778L10 12.2223V0L0 4.88888V17.1111Z" fill="white"/>
-                </svg>
-            </div>
-            <div class="nav__content">
-                <ul class="menu ">
-                    <li class="menu__item menu__item--active">
-                        <a href="./landing-page.html" class="menu__link">Home</a>
-                    </li>
-                    <li class="menu__item"><a href="./landing-page.html" class="menu__link">About us</a></li>
-                    <li class="menu__item"><a href="./landing-page.html" class="menu__link">Our feature</a></li>
-                    <li class="menu__item"><a href="./landing-page.html" class="menu__link">How it works</a></li>
-                    <li class="menu__item"><a href="./landing-page.html" class="menu__link">Contact Us</a></li>
-                </ul>
-                <div class="nav__btn">
-                    <div class="nav__btn--login"><a href="./login.html">Login</a></div>
-                    <div class="nav__btn--signup"><a href="./register.html">Sign Up</a></div>
+{% extends  'base/index.html' %}
+{% load static %}
+{% block title %}
+	Login
+{% endblock %}
+{% block content %}
+    <main class="main" style="background:#f3f6fd; min-height: calc(100vh - 72px);">
+        <div class="container" style="display:flex; align-items:center; justify-content:center; padding:4rem 0;">
+            <div style="background:#fff; width:100%; max-width:44rem; border-radius:1.6rem; padding:2.4rem; box-shadow:0 10px 30px rgba(0,0,0,0.06);">
+                <div class="section-head" style="margin-bottom:1.5rem;">
+                    <h3 class="section-title" style="width:auto;">Welcome back</h3>
+                    <div class="section-line"></div>
                 </div>
-            </div>
-        </nav>
-    </div>
-    
-</header>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="account-field">
+                        <label class="labe__account" for="email">Email</label>
+                        <input name="email" id="email" type="email" class="panel-account__input"
+                               placeholder="Enter your email"
+                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
+                    </div>
+                    <div class="account-field">
+                        <label class="labe__account" for="password">Password</label>
+                        <input name="password" id="password" type="password" class="panel-account__input"
+                               placeholder="Enter your password"
+                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin:.5rem 0 1.5rem 0;">
+                        <label style="font-family: 'Exo2-SemiBold'; font-size:1.2rem; color:#1C1D22;"><input
+                                type="checkbox"
+                                style="margin-right:.5rem;">Remember
+                            me</label>
+                        <a href="{% url 'account:password_reset' %}"
+                           style="font-family: 'Exo2-SemiBold'; font-size:1.2rem; color:#775ee9;">Forgot password?</a>
+                    </div>
+                    {% if form.non_field_errors %}
+                        <div id="errorBox" class="error-box"
+                             style="display:block; background:#fee; border:1px solid #fcc; border-radius:0.8rem; padding:1.2rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+                            <div class="error-header" style="display:flex; align-items:center; margin-bottom:0.8rem;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                     style="margin-right:0.8rem; color:#e74c3c;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                                          fill="currentColor"/>
+                                </svg>
+                                <h4 style="margin:0; font-size:1.4rem; color:#e74c3c;">{{ form.non_field_errors }}</h4>
+                            </div>
+                            <div id="errorMessages" class="error-messages"
+                                 style="font-size:1.2rem; color:#c0392b; line-height:1.5;">
+                                <!-- Error messages will be displayed here -->
+                            </div>
+                        </div>
+                    {% endif %}
+                    <button class="start-planing__btn" type="submit" style="width:100%;">Login</button>
+                </form>
+                <p class="section-caption" style="width:auto; text-align:center; margin-top:1.5rem;">New here? <a
+                        href="{% url 'account:sign_up' %}" style="color:#775ee9;">Create an account</a></p>
 
-<main class="main" style="background:#f3f6fd; min-height: calc(100vh - 72px);">
-    <div class="container" style="display:flex; align-items:center; justify-content:center; padding:4rem 0;">
-        <div style="background:#fff; width:100%; max-width:44rem; border-radius:1.6rem; padding:2.4rem; box-shadow:0 10px 30px rgba(0,0,0,0.06);">
-            <div class="section-head" style="margin-bottom:1.5rem;">
-                <h3 class="section-title" style="width:auto;">Welcome back</h3>
-                <div class="section-line"></div>
             </div>
-            <form>
-                <div class="account-field">
-                    <label class="labe__account" for="email">Email</label>
-                    <input id="email" type="email" class="panel-account__input" placeholder="Enter your email" style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
-                </div>
-                <div class="account-field">
-                    <label class="labe__account" for="password">Password</label>
-                    <input id="password" type="password" class="panel-account__input" placeholder="Enter your password" style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin:.5rem 0 1.5rem 0;">
-                    <label style="font-family: 'Exo2-SemiBold'; font-size:1.2rem; color:#1C1D22;"><input type="checkbox" style="margin-right:.5rem;">Remember me</label>
-                    <a href="./password_reset_form.html" style="font-family: 'Exo2-SemiBold'; font-size:1.2rem; color:#775ee9;">Forgot password?</a>
-                </div>
-                <button class="start-planing__btn" type="submit" style="width:100%;">Login</button>
-            </form>
-            <p class="section-caption" style="width:auto; text-align:center; margin-top:1.5rem;">New here? <a href="./register.html" style="color:#775ee9;">Create an account</a></p>
         </div>
-    </div>
-</main>
-</body>
-</html>
-
-
+    </main>
+{% endblock %}

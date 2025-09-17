@@ -548,7 +548,7 @@ document.addEventListener("click", function (event) {
     addTaskBtn.addEventListener("click", function () {
         const serverForm = getServerTaskForm();
         if (!serverForm) return;
-        if (formOpen) return;
+            if (formOpen) return;
         serverForm.style.display = "block";
         serverForm.style.animation = "formPop .18s ease";
         formOpen = true;
@@ -565,7 +565,7 @@ document.addEventListener("click", function (event) {
                 {once: true}
             );
         }
-        if (formEl) {
+                if (formEl) {
             formEl.addEventListener(
                 "submit",
                 function () {
@@ -640,31 +640,10 @@ if (accountEditBtn && accountForm) {
     });
 }
 
-const avatarEditBtn = document.getElementById("avatar-edit-btn");
-const avatarFileInput = document.getElementById("avatar-file");
-const avatarImg = document.getElementById("account-avatar");
-
-if (avatarEditBtn && avatarFileInput && avatarImg) {
-    avatarEditBtn.addEventListener("click", function () {
-        avatarFileInput.click();
+document.getElementById("username").addEventListener("input", function () {
+        this.value = this.value.replace(/[^a-zA-Z0-9_]/g, "");
     });
 
-    avatarFileInput.addEventListener("change", function () {
-        const file = this.files && this.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            if (typeof e.target.result === "string") {
-                avatarImg.src = e.target.result;
-            }
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-const changePasswordBtn = document.getElementById("change-password-btn");
-if (changePasswordBtn) {
-    changePasswordBtn.addEventListener("click", function () {
-        window.location.href = "./password_change_form.html";
-    });
-}
+    document.getElementById("gmail").addEventListener("input", function () {
+        this.value = this.value.replace(/[^a-zA-Z0-9@._-]/g, "");
+});

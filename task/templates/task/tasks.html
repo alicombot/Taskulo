@@ -1,4 +1,7 @@
-{% extends 'parent/base.html' %} {% block content %}
+{% extends 'parent/base.html' %} {% block title %}
+	{{ user.username }}
+{% endblock %}
+{% block content %}
     <main class="main">
         <div class="content">
             <div class="content__items">
