@@ -458,24 +458,148 @@ function enterTaskEditMode(taskCard) {
 }
 
 
+
+function attachProjectActions(projectItem) {
+    if (!projectItem || projectItem.querySelector('.project-actions')) return;
+    const labelEl = projectItem.querySelector('span');
+    if (!labelEl) return;
+    const isAllProjects = /all\s*projects/i.test(labelEl.textContent);
+    const actions = document.createElement('div');
+    actions.className = 'project-actions';
+    actions.innerHTML = `
+     <button type="button" class="project-action-btn project-action-btn--edit" aria-label="Edit project">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+      </button>
+      <button type="button" class="project-action-btn project-action-btn--delete" aria-label="Delete project">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M14 6V4a2 2 0 0 0-2-2h0a2 2 0 0 0-2 2v2"/></svg>
+      </button>`;
+    projectItem.appendChild(actions);
+    if (isAllProjects) actions.style.display = 'none';
+
+    const editBtn = actions.querySelector('.project-action-btn--edit');
+    const deleteBtn = actions.querySelector('.project-action-btn--delete');
+
+    editBtn && editBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const current = labelEl.textContent.trim();
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'project-rename-input';
+        input.value = current;
+        labelEl.style.display = 'none';
+        projectItem.insertBefore(input, actions);
+        input.focus();
+        input.select();
+
+        function commitRename() {
+            const val = input.value.trim();
+            const newName = val || current;
+
+            $.ajax({
+                url: "/project/update-project/",
+                type: "POST",
+                data: {
+                    id: projectItem.dataset.id,
+                    name: newName,
+                    csrfmiddlewaretoken: csrfToken
+                },
+                success: function (data) {
+                    labelEl.textContent = data.name || newName;
+                    input.remove();
+                    labelEl.style.display = '';
+                },
+                error: function (xhr) {
+                    console.error("Rename error:", xhr.responseText);
+                    input.remove();
+                    labelEl.style.display = '';
+                }
+            });
+        }
+
+        function cancelRename() {
+            input.remove();
+            labelEl.style.display = '';
+        }
+
+        input.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Enter') commitRename();
+            else if (ev.key === 'Escape') cancelRename();
+        });
+        input.addEventListener('blur', commitRename);
+    });
+
+    deleteBtn && deleteBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+        $.ajax({
+            url: "/project/delete-project/",
+            type: "POST",
+            data: {
+                id: projectItem.dataset.id,
+                csrfmiddlewaretoken: csrfToken
+            },
+            success: function () {
+                projectItem.remove();
+            },
+            error: function (xhr) {
+                console.error("Delete error:", xhr.responseText);
+            }
+        });
+    });
+
+}
+
+
+document.querySelectorAll('.status-task > .status-project__item').forEach(function (li) {
+    attachProjectActions(li);
+});
+
+
 addProject.addEventListener("click", function () {
     const addList = document.querySelector(".status-task");
-
-    if (addList.querySelector(".add-project")) {
-        return;
-    }
+    if (!addList || addList.querySelector(".add-project")) return;
 
     const newProject = document.createElement("li");
+    newProject.classList.add("status-project__item");
+
+    const fieldWrap = document.createElement("div");
+    fieldWrap.className = "add-project__field-wrap";
+
     const text = document.createElement("input");
     text.classList.add("add-project");
 
-    text.addEventListener("keypress", function (e) {
-        if (e.key === "Enter" && text.value.trim() !== "") {
-            saveText();
+    const saveBtn = document.createElement("button");
+    saveBtn.type = "button";
+    saveBtn.id = "add_project";
+    saveBtn.className = "add-project__btn btn btn--primary";
+    saveBtn.setAttribute("aria-label", "Add project");
+    saveBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.9"><path d="M9 5L1 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5 9L5 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg>';
+
+    let clickingSave = false;
+    saveBtn.addEventListener("mousedown", function () {
+        clickingSave = true;
+    });
+
+    let enterPressed = false;
+
+    text.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (text.value.trim() !== "") {
+                enterPressed = true;
+                saveText();
+            }
         }
     });
 
     text.addEventListener("blur", function () {
+        if (enterPressed) {
+            enterPressed = false;
+            return;
+        }
         if (text.value.trim() !== "") {
             saveText();
         } else {
@@ -483,18 +607,49 @@ addProject.addEventListener("click", function () {
         }
     });
 
+    saveBtn.addEventListener("click", function () {
+        if (text.value.trim() !== "") saveText();
+        clickingSave = false;
+    });
+
+
     function saveText() {
         const value = text.value.trim();
-        if (value !== "") {
-            text.remove();
-            const item = document.createElement("span");
-            item.textContent = value;
-            newProject.appendChild(item);
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        if (!value) return;
+        let saved = false;
+
+        if (!saved) {
+            $.ajax({
+                url: "/project/add-project/",
+                type: "POST",
+                data: {
+                    name: value,
+                    csrfmiddlewaretoken: csrfToken
+                },
+                success: function (data) {
+
+                    fieldWrap.remove();
+                    const item = document.createElement("span");
+                    item.textContent = data.name || value;
+                    newProject.setAttribute("data-id", data.id);
+                    newProject.appendChild(item);
+                    attachProjectActions(newProject);
+                    $('.status-project__item--active').text('All projects ' + '(' + data.total_project + ')')
+                    saved = true;
+                },
+                error: function (xhr, status, error) {
+                    console.log("ERROR:", xhr.status, error, xhr.responseText);
+                    alert("Server error");
+                }
+            });
         }
     }
 
-    newProject.classList.add("status-project__item");
-    newProject.appendChild(text);
+
+    fieldWrap.appendChild(text);
+    fieldWrap.appendChild(saveBtn);
+    newProject.appendChild(fieldWrap);
     addList.appendChild(newProject);
     text.scrollIntoView({behavior: "smooth", block: "center"});
     text.focus();
@@ -548,7 +703,7 @@ document.addEventListener("click", function (event) {
     addTaskBtn.addEventListener("click", function () {
         const serverForm = getServerTaskForm();
         if (!serverForm) return;
-            if (formOpen) return;
+        if (formOpen) return;
         serverForm.style.display = "block";
         serverForm.style.animation = "formPop .18s ease";
         formOpen = true;
@@ -565,7 +720,7 @@ document.addEventListener("click", function (event) {
                 {once: true}
             );
         }
-                if (formEl) {
+        if (formEl) {
             formEl.addEventListener(
                 "submit",
                 function () {
@@ -641,9 +796,9 @@ if (accountEditBtn && accountForm) {
 }
 
 document.getElementById("username").addEventListener("input", function () {
-        this.value = this.value.replace(/[^a-zA-Z0-9_]/g, "");
-    });
+    this.value = this.value.replace(/[^a-zA-Z0-9_]/g, "");
+});
 
-    document.getElementById("gmail").addEventListener("input", function () {
-        this.value = this.value.replace(/[^a-zA-Z0-9@._-]/g, "");
+document.getElementById("gmail").addEventListener("input", function () {
+    this.value = this.value.replace(/[^a-zA-Z0-9@._-]/g, "");
 });
