@@ -1,6 +1,6 @@
 from django.db import models
-
 from account.models import User
+from project.models import Project
 
 
 # Create your models here.
@@ -17,8 +17,8 @@ class Task(models.Model):
         ('done', 'Done'),
     )
 
-    # project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="tasks")
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True, related_name="tasks")
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="user")
     title = models.CharField(max_length=100, verbose_name='عنوان')
     description = models.TextField(max_length=250, blank=True, null=True, verbose_name='توضیحات')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='todo')

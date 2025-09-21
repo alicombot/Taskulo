@@ -82,10 +82,10 @@
                 </div>
                 <div class="manage-list__content manage-list__content--active">
                     <ul class="status-task">
-                        <li class="status-project__item"><span
+                        <li class="status-project__item project-link" data-id="0" data-url="{% url 'task:project_tasks' 0 %}"><span
                                 class="status-project__item--active">All projects ({{ projects|length | default:'0' }})</span></li>
                         {% for pj in projects %}
-                        	<li class="status-project__item" data-id="{{ pj.id }}"><span class="">{{ pj.title }}</span></li>
+                        	<li class="status-project__item project-link" data-id="{{ pj.id }}" data-url="{% url 'task:project_tasks' pj.id %}"><span class="">{{ pj.title }}</span></li>
                         {% endfor %}
                     </ul>
                 </div>

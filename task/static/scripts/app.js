@@ -357,22 +357,38 @@ document.addEventListener("click", async function (e) {
             return;
         }
 
-        const csrf =
-            document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
+        const csrf = document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
+        const deleteUrl = taskCard.getAttribute("data-delete-url") || `/delete-task/${taskId}/`;
 
         try {
-            const response = await fetch(`/dashboard/delete-task/${taskId}/`, {
+            const response = await fetch(deleteUrl, {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": csrf,
                     "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
                 },
             });
 
             const data = await response.json();
 
             if (data.success) {
+
                 taskCard.remove();
+
+                let activeLi = null;
+                const activeSpan = document.querySelector('.project-link span.status-project__item--active');
+                if (activeSpan) activeLi = activeSpan.closest('.project-link');
+                if (!activeLi) activeLi = document.querySelector('.status-project__item.project-link[data-id="0"]');
+                const url = activeLi ? activeLi.dataset.url : null;
+                if (url) {
+                    fetch(url, {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+                        .then(r => r.text())
+                        .then(html => {
+                            const taskContainer = document.getElementById('task-container');
+                            if (taskContainer) taskContainer.innerHTML = html;
+                        });
+                }
             } else {
                 alert(data.message || "خطا در حذف تسک");
             }
@@ -457,14 +473,13 @@ function enterTaskEditMode(taskCard) {
     }
 }
 
-
 function attachProjectActions(projectItem) {
-    if (!projectItem || projectItem.querySelector('.project-actions')) return;
-    const labelEl = projectItem.querySelector('span');
+    if (!projectItem || projectItem.querySelector(".project-actions")) return;
+    const labelEl = projectItem.querySelector("span");
     if (!labelEl) return;
     const isAllProjects = /all\s*projects/i.test(labelEl.textContent);
-    const actions = document.createElement('div');
-    actions.className = 'project-actions';
+    const actions = document.createElement("div");
+    actions.className = "project-actions";
     actions.innerHTML = `
      <button type="button" class="project-action-btn project-action-btn--edit" aria-label="Edit project">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
@@ -473,20 +488,23 @@ function attachProjectActions(projectItem) {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M14 6V4a2 2 0 0 0-2-2h0a2 2 0 0 0-2 2v2"/></svg>
       </button>`;
     projectItem.appendChild(actions);
-    if (isAllProjects) actions.style.display = 'none';
+    if (isAllProjects) actions.style.display = "none";
 
-    const editBtn = actions.querySelector('.project-action-btn--edit');
-    const deleteBtn = actions.querySelector('.project-action-btn--delete');
+    const editBtn = actions.querySelector(".project-action-btn--edit");
+    const deleteBtn = actions.querySelector(".project-action-btn--delete");
 
-    editBtn && editBtn.addEventListener('click', function (e) {
+    editBtn &&
+    editBtn.addEventListener("click", function (e) {
         e.stopPropagation();
         const current = labelEl.textContent.trim();
-        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'project-rename-input';
+        const csrfToken = document.querySelector(
+            'input[name="csrfmiddlewaretoken"]'
+        ).value;
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "project-rename-input";
         input.value = current;
-        labelEl.style.display = 'none';
+        labelEl.style.display = "none";
         projectItem.insertBefore(input, actions);
         input.focus();
         input.select();
@@ -501,62 +519,66 @@ function attachProjectActions(projectItem) {
                 data: {
                     id: projectItem.dataset.id,
                     name: newName,
-                    csrfmiddlewaretoken: csrfToken
+                    csrfmiddlewaretoken: csrfToken,
                 },
                 success: function (data) {
                     labelEl.textContent = data.name || newName;
                     input.remove();
-                    labelEl.style.display = '';
+                    labelEl.style.display = "";
                 },
                 error: function (xhr) {
                     console.error("Rename error:", xhr.responseText);
                     input.remove();
-                    labelEl.style.display = '';
-                }
+                    labelEl.style.display = "";
+                },
             });
         }
 
         function cancelRename() {
             input.remove();
-            labelEl.style.display = '';
+            labelEl.style.display = "";
         }
 
-        input.addEventListener('keydown', function (ev) {
-            if (ev.key === 'Enter') commitRename();
-            else if (ev.key === 'Escape') cancelRename();
+        input.addEventListener("keydown", function (ev) {
+            if (ev.key === "Enter") commitRename();
+            else if (ev.key === "Escape") cancelRename();
         });
-        input.addEventListener('blur', commitRename);
+        input.addEventListener("blur", commitRename);
     });
 
-    deleteBtn && deleteBtn.addEventListener('click', function (e) {
+    deleteBtn &&
+    deleteBtn.addEventListener("click", function (e) {
         e.stopPropagation();
 
-        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        const csrfToken = document.querySelector(
+            'input[name="csrfmiddlewaretoken"]'
+        ).value;
 
         $.ajax({
             url: "/project/delete-project/",
             type: "POST",
             data: {
                 id: projectItem.dataset.id,
-                csrfmiddlewaretoken: csrfToken
+                csrfmiddlewaretoken: csrfToken,
             },
             success: function (data) {
                 projectItem.remove();
-                $('.status-project__item--active').text('All projects ' + '(' + data.total_project + ')')
+                $(".status-project__item--active").text(
+                    "All projects " + "(" + data.total_project + ")"
+                );
             },
             error: function (xhr) {
                 console.error("Delete error:", xhr.responseText);
-            }
+            },
         });
     });
-
 }
 
-
-document.querySelectorAll('.status-task > .status-project__item').forEach(function (li) {
-    attachProjectActions(li);
-});
-
+document
+    .querySelectorAll(".status-task > .status-project__item")
+    .forEach(function (li) {
+        attachProjectActions(li);
+    });
 
 addProject.addEventListener("click", function () {
     const addList = document.querySelector(".status-task");
@@ -576,7 +598,8 @@ addProject.addEventListener("click", function () {
     saveBtn.id = "add_project";
     saveBtn.className = "add-project__btn btn btn--primary";
     saveBtn.setAttribute("aria-label", "Add project");
-    saveBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.9"><path d="M9 5L1 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5 9L5 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg>';
+    saveBtn.innerHTML =
+        '<svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.9"><path d="M9 5L1 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5 9L5 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg>';
 
     let clickingSave = false;
     saveBtn.addEventListener("mousedown", function () {
@@ -612,10 +635,11 @@ addProject.addEventListener("click", function () {
         clickingSave = false;
     });
 
-
     function saveText() {
         const value = text.value.trim();
-        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        const csrfToken = document.querySelector(
+            'input[name="csrfmiddlewaretoken"]'
+        ).value;
         if (!value) return;
         let saved = false;
 
@@ -625,27 +649,27 @@ addProject.addEventListener("click", function () {
                 type: "POST",
                 data: {
                     name: value,
-                    csrfmiddlewaretoken: csrfToken
+                    csrfmiddlewaretoken: csrfToken,
                 },
                 success: function (data) {
-
                     fieldWrap.remove();
                     const item = document.createElement("span");
                     item.textContent = data.name || value;
                     newProject.setAttribute("data-id", data.id);
                     newProject.appendChild(item);
                     attachProjectActions(newProject);
-                    $('.status-project__item--active').text('All projects ' + '(' + data.total_project + ')')
+                    $(".status-project__item--active").text(
+                        "All projects " + "(" + data.total_project + ")"
+                    );
                     saved = true;
                 },
                 error: function (xhr, status, error) {
                     console.log("ERROR:", xhr.status, error, xhr.responseText);
                     alert("Server error");
-                }
+                },
             });
         }
     }
-
 
     fieldWrap.appendChild(text);
     fieldWrap.appendChild(saveBtn);
@@ -655,17 +679,6 @@ addProject.addEventListener("click", function () {
     text.focus();
 });
 
-const taskList = document.querySelector(".status-task");
-taskList.addEventListener("click", function (event) {
-    if (event.target && event.target.tagName === "SPAN") {
-        const allSpans = taskList.querySelectorAll("span");
-        allSpans.forEach((span) => {
-            span.classList.remove("status-project__item--active");
-        });
-
-        event.target.classList.add("status-project__item--active");
-    }
-});
 
 function toggleNotificationOptions() {
     const notifOptions = document.getElementById("notification-options");
@@ -688,49 +701,6 @@ document.addEventListener("click", function (event) {
     }
 });
 
-(function () {
-    const firstColumn = document.querySelector(".content .content__items");
-    if (!firstColumn) return;
-    const addTaskBtn = firstColumn.querySelector(".add-task");
-    if (!addTaskBtn) return;
-
-    let formOpen = false;
-
-    function getServerTaskForm() {
-        return document.getElementById("server-task-form");
-    }
-
-    addTaskBtn.addEventListener("click", function () {
-        const serverForm = getServerTaskForm();
-        if (!serverForm) return;
-            if (formOpen) return;
-        serverForm.style.display = "block";
-        serverForm.style.animation = "formPop .18s ease";
-        formOpen = true;
-
-        const formEl = serverForm.querySelector("form");
-        const cancelBtn = serverForm.querySelector('[data-action="cancel"]');
-        if (cancelBtn) {
-            cancelBtn.addEventListener(
-                "click",
-                function () {
-                    serverForm.style.display = "none";
-                    formOpen = false;
-                },
-                {once: true}
-            );
-        }
-        if (formEl) {
-            formEl.addEventListener(
-                "submit",
-                function () {
-                    formOpen = false;
-                },
-                {once: true}
-            );
-        }
-    });
-})();
 
 if (accountEditBtn && accountForm) {
     accountEditBtn.addEventListener("click", function () {
@@ -796,9 +766,109 @@ if (accountEditBtn && accountForm) {
 }
 
 document.getElementById("username").addEventListener("input", function () {
-        this.value = this.value.replace(/[^a-zA-Z0-9_]/g, "");
-    });
+    this.value = this.value.replace(/[^a-zA-Z0-9_]/g, "");
+});
 
-    document.getElementById("gmail").addEventListener("input", function () {
-        this.value = this.value.replace(/[^a-zA-Z0-9@._-]/g, "");
+document.getElementById("gmail").addEventListener("input", function () {
+    this.value = this.value.replace(/[^a-zA-Z0-9@._-]/g, "");
+});
+
+
+document.addEventListener('click', function (e) {
+    const projectLink = e.target.closest('.project-link');
+    if (!projectLink) return;
+
+    e.preventDefault();
+
+    const url = projectLink.dataset.url;
+    if (!url) return;
+
+    document.querySelectorAll('.status-project__item span').forEach(span => {
+        span.classList.remove('status-project__item--active');
+    });
+    const spanEl = projectLink.querySelector('span');
+    if (spanEl) spanEl.classList.add('status-project__item--active');
+
+    fetch(url, {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(html => {
+
+            const taskContainer = document.getElementById('task-container');
+            if (taskContainer) {
+                taskContainer.innerHTML = html;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading project tasks:', error);
+        });
+});
+
+document.addEventListener('click', function (e) {
+    const addTaskBtn = e.target.closest('.add-task');
+    if (!addTaskBtn) return;
+
+    const column = addTaskBtn.closest('.content__items');
+    const serverForm = column && column.querySelector('#server-task-form');
+    if (serverForm) {
+        serverForm.style.display = 'block';
+        serverForm.style.animation = 'formPop .18s ease';
+    }
+});
+
+document.addEventListener('click', function (e) {
+    const cancelBtn = e.target.closest('[data-action="cancel"]');
+    if (!cancelBtn) return;
+    const formWrap = cancelBtn.closest('#server-task-form');
+    if (formWrap) {
+        formWrap.style.display = 'none';
+    }
+});
+
+document.addEventListener('submit', function (e) {
+    const form = e.target.closest('#server-task-form form.task-form');
+    if (!form) return;
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    fetch(form.action, {
+        method: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+        body: formData
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.errors) {
+                alert('Validation error');
+                return;
+            }
+            const formWrap = form.closest('#server-task-form');
+            if (formWrap) {
+                form.reset();
+                formWrap.style.display = 'none';
+            }
+
+            let activeLi = null;
+            const activeSpan = document.querySelector('.project-link span.status-project__item--active');
+            if (activeSpan) {
+                activeLi = activeSpan.closest('.project-link');
+            }
+            if (!activeLi) {
+                activeLi = document.querySelector('.status-project__item.project-link[data-id="0"]');
+            }
+            const url = activeLi ? activeLi.dataset.url : null;
+            if (url) {
+                fetch(url, {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+                    .then(r => r.text())
+                    .then(html => {
+                        const taskContainer = document.getElementById('task-container');
+                        if (taskContainer) taskContainer.innerHTML = html;
+                    });
+            }
+        })
+        .catch(err => console.error('Create task error', err));
 });
