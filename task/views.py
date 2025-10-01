@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+import json
 from django.db.models import Q, Case, When, IntegerField
 from datetime import date as dt_date
 from project.models import Project
@@ -84,6 +85,19 @@ def update_task(request, task_id):
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 return JsonResponse({"error": "Task not found"}, status=404)
             return redirect('task:index')
+
+        # Allow partial AJAX updates for status only
+        if request.headers.get("x-requested-with") == "XMLHttpRequest" and 'status' in request.POST:
+            new_status = request.POST.get('status', '').strip()
+            if new_status in ['todo', 'in progress', 'done']:
+                task.status = new_status
+                task.assigned_to = request.user
+                task.save(update_fields=["status", "assigned_to", "updated_time"] if hasattr(task, 'updated_time') else ["status", "assigned_to"])  # best-effort
+                return JsonResponse({
+                    "id": task.id,
+                    "status": task.status,
+                })
+            return JsonResponse({"error": "Invalid status"}, status=400)
 
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
@@ -257,3 +271,16 @@ def search(request):
         'done_count': done_tasks.count(),
     }
     return render(request, 'task/task.html', context)
+
+
+@login_required
+@require_POST
+def update_task_status(request, task_id):
+    task = get_object_or_404(Task, id=task_id, assigned_to=request.user)
+    data = json.loads(request.body)
+    status = data.get('status')
+    if status not in ['todo', 'in progress', 'done']:
+        return JsonResponse({'success': False, 'error': 'Invalid status'})
+    task.status = status
+    task.save()
+    return JsonResponse({'success': True})

@@ -66,6 +66,8 @@ const NotificationManager = (function () {
       return '<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>';
     if (type === "error")
       return '<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>';
+    if (type === "warning")
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l9 16H3l9-16Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v5"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01"/></svg>';
     if (type === "update")
       return '<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 0 1 15.54-5.94"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 0 1-15.54 5.94"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 7V4h3"/><path stroke-linecap="round" stroke-linejoin="round" d="M20 17v3h-3"/></svg>';
     return '<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>';
@@ -117,8 +119,9 @@ const NotificationManager = (function () {
     toast.style.minWidth = "280px";
     toast.style.maxWidth = "360px";
     toast.style.borderRadius = "14px";
-    toast.style.background = "rgba(28,29,34,0.9)";
-    toast.style.boxShadow = "0 10px 30px rgba(0,0,0,0.2)";
+    // Transparent background so the inner notification-option gradient is visible (blue/red/green/yellow)
+    toast.style.background = "transparent";
+    toast.style.boxShadow = "none";
     toast.classList.add("toast-enter");
     toast.style.animation =
       toast.style.animation ||
@@ -198,6 +201,97 @@ const NotificationManager = (function () {
       if (dropdown) dropdown.style.display = "block";
     });
 
+// Handle status change via the hover check button beside task title
+document.addEventListener("click", function (e) {
+  const btn = e.target.closest(".task__title--check");
+  if (!btn) return;
+  const card = btn.closest(".task");
+  if (!card) return;
+  const nextStatus = btn.getAttribute("data-next-status");
+  if (!nextStatus) return;
+  const editUrl = card.getAttribute("data-edit-url");
+  if (!editUrl) return;
+
+  const formData = new FormData();
+  formData.append("status", nextStatus);
+  const csrf = document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
+  if (csrf) formData.append("csrfmiddlewaretoken", csrf);
+
+  // Animate move-out first
+  let animated = false;
+  const runRequest = () => {
+    fetch(editUrl, {
+      method: "POST",
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+      body: formData,
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && data.status) {
+          try {
+            NotificationManager.notify({
+              title: "Task status updated",
+              description: `${card.getAttribute("data-title") || ""} → ${data.status}`,
+              type: "update",
+            });
+          } catch {}
+
+          let activeLi = null;
+          const activeSpan = document.querySelector(
+            ".project-link span.status-project__item--active"
+          );
+          if (activeSpan) activeLi = activeSpan.closest(".project-link");
+          if (!activeLi)
+            activeLi = document.querySelector(
+              '.status-project__item.project-link[data-id="0"]'
+            );
+          const url = activeLi ? activeLi.dataset.url : null;
+          if (url) {
+            fetch(withSort(url), { headers: { "X-Requested-With": "XMLHttpRequest" } })
+              .then((r) => r.text())
+              .then((html) => {
+                const taskContainer = document.getElementById("task-container");
+                if (taskContainer) {
+                  taskContainer.innerHTML = html;
+                  // Apply enter animation to new tasks briefly
+                  requestAnimationFrame(() => {
+                    taskContainer
+                      .querySelectorAll(".task")
+                      .forEach((el) => {
+                        el.classList.add("task--enter");
+                        setTimeout(() => el.classList.remove("task--enter"), 420);
+                      });
+                  });
+                }
+              });
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Status update error", err);
+        try {
+          NotificationManager.notify({
+            title: "Server error",
+            description: "Could not update status",
+            type: "error",
+          });
+        } catch {}
+      });
+  };
+
+  card.classList.add("task--moving");
+  const onAnimEnd = (ev) => {
+    if (ev && ev.target !== card) return;
+    if (animated) return;
+    animated = true;
+    card.removeEventListener("animationend", onAnimEnd);
+    runRequest();
+  };
+  card.addEventListener("animationend", onAnimEnd, { once: true });
+  // Fallback in case animationend doesn't fire
+  setTimeout(onAnimEnd, 320);
+});
+
   return { notify };
 })();
 
@@ -216,6 +310,34 @@ document.addEventListener("DOMContentLoaded", function () {
       false
     );
   }
+
+  // Set header date to today's date in the same format used by the calendar
+  try {
+    const timeEl = document.querySelector(".nav__item--date .date");
+    if (timeEl) {
+      const now = new Date();
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      const dd = String(now.getDate());
+      const mm = monthNames[now.getMonth()];
+      const yyyy = now.getFullYear();
+      timeEl.textContent = `${dd} ${mm} ${yyyy}`;
+      // Optional: keep semantic datetime attribute in ISO format
+      try { timeEl.setAttribute("datetime", `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`); } catch {}
+    }
+  } catch {}
 });
 
 function openSidebarContent(contentId) {
@@ -363,13 +485,13 @@ function toggleSortOptions() {
 
 // Map selected UI label to backend sort key
 function getSelectedSortKey() {
-  const el = document.querySelector('.sort__text');
-  const txt = (el && el.textContent ? el.textContent : '').trim().toLowerCase();
-  if (txt === 'oldest') return 'oldest';
-  if (txt === 'due soon') return 'due';
-  if (txt === 'high priority') return 'priority';
-  if (txt === 'a-z') return 'az';
-  return 'newest';
+  const el = document.querySelector(".sort__text");
+  const txt = (el && el.textContent ? el.textContent : "").trim().toLowerCase();
+  if (txt === "oldest") return "oldest";
+  if (txt === "due soon") return "due";
+  if (txt === "high priority") return "priority";
+  if (txt === "a-z") return "az";
+  return "newest";
 }
 
 // Append current sort to any URL
@@ -377,10 +499,17 @@ function withSort(url) {
   const key = getSelectedSortKey();
   try {
     const u = new URL(url, window.location.origin);
-    if (key && key !== 'newest') u.searchParams.set('sort', key); else u.searchParams.delete('sort');
-    return u.pathname + (u.search || '');
+    if (key && key !== "newest") u.searchParams.set("sort", key);
+    else u.searchParams.delete("sort");
+    return u.pathname + (u.search || "");
   } catch (e) {
-    if (key && key !== 'newest') return url + (url.includes('?') ? '&' : '?') + 'sort=' + encodeURIComponent(key);
+    if (key && key !== "newest")
+      return (
+        url +
+        (url.includes("?") ? "&" : "?") +
+        "sort=" +
+        encodeURIComponent(key)
+      );
     return url;
   }
 }
@@ -1301,7 +1430,9 @@ document.addEventListener("submit", function (e) {
         try {
           suppressUpdateToastUntil = Date.now() + 2000;
         } catch {}
-        fetch(withSort(url), { headers: { "X-Requested-With": "XMLHttpRequest" } })
+        fetch(withSort(url), {
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        })
           .then(function (r) {
             return r.text();
           })
@@ -1375,7 +1506,9 @@ document.addEventListener("submit", function (e) {
         );
       const url = activeLi ? activeLi.dataset.url : null;
       if (url) {
-        fetch(withSort(url), { headers: { "X-Requested-With": "XMLHttpRequest" } })
+        fetch(withSort(url), {
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        })
           .then((r) => r.text())
           .then((html) => {
             const taskContainer = document.getElementById("task-container");
@@ -1482,8 +1615,6 @@ document.addEventListener("submit", function (e) {
       .catch(() => clearSuggestions());
   }, 200);
 
-  
-
   function performSearch(q) {
     if (!searchUrl) return;
     const project = getActiveProjectId();
@@ -1544,3 +1675,89 @@ document.addEventListener("submit", function (e) {
     if (!form.contains(e.target)) clearSuggestions();
   });
 })();
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.body.addEventListener("click", function (e) {
+    const title = e.target.closest(".task-title");
+    if (!title) return;
+
+    const taskDiv = title.closest(".task");
+    if (!taskDiv) return;
+    if (taskDiv.dataset.status === "done") return; // روی done کاری نکن
+    if (taskDiv.classList.contains("empty-box")) return; // روی باکس خالی کاری نکن
+
+    // چرخه وضعیت
+    let nextStatus = "in progress";
+    if (taskDiv.dataset.status === "in progress") nextStatus = "done";
+
+    // ارسال AJAX برای تغییر وضعیت
+    fetch(`/task/update-task-status/${taskDiv.dataset.id}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: nextStatus }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          moveTaskWithTransition(taskDiv, nextStatus);
+        }
+      });
+  });
+});
+
+// تابع گرفتن CSRF
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// جابه‌جایی با transition نرم
+function moveTaskWithTransition(taskDiv, nextStatus) {
+  // پیدا کردن ستون مقصد
+  const columns = {
+    todo: document.querySelector('.content__items[data-status="todo"]'),
+    "in progress": document.querySelector(
+      '.content__items[data-status="in progress"]'
+    ),
+    done: document.querySelector('.content__items[data-status="done"]'),
+  };
+  const targetCol = columns[nextStatus];
+  if (!targetCol) return;
+
+  // انیمیشن fade out
+  taskDiv.style.transition =
+    "opacity 0.4s cubic-bezier(.4,2,.6,1), transform 0.4s cubic-bezier(.4,2,.6,1)";
+  taskDiv.style.opacity = "0";
+  taskDiv.style.transform = "scale(0.95)";
+  setTimeout(() => {
+    taskDiv.style.opacity = "";
+    taskDiv.style.transform = "";
+    taskDiv.dataset.status = nextStatus;
+    targetCol.appendChild(taskDiv);
+    // انیمیشن fade in
+    taskDiv.style.opacity = "0";
+    setTimeout(() => {
+      taskDiv.style.transition =
+        "opacity 0.4s cubic-bezier(.4,2,.6,1), transform 0.4s cubic-bezier(.4,2,.6,1)";
+      taskDiv.style.opacity = "1";
+      taskDiv.style.transform = "scale(1)";
+      setTimeout(() => {
+        taskDiv.style.transition = "";
+        taskDiv.style.transform = "";
+      }, 400);
+    }, 10);
+  }, 400);
+}
