@@ -86,13 +86,13 @@ def update_task(request, task_id):
                 return JsonResponse({"error": "Task not found"}, status=404)
             return redirect('task:index')
 
-        # Allow partial AJAX updates for status only
+
         if request.headers.get("x-requested-with") == "XMLHttpRequest" and 'status' in request.POST:
             new_status = request.POST.get('status', '').strip()
             if new_status in ['todo', 'in progress', 'done']:
                 task.status = new_status
                 task.assigned_to = request.user
-                task.save(update_fields=["status", "assigned_to", "updated_time"] if hasattr(task, 'updated_time') else ["status", "assigned_to"])  # best-effort
+                task.save(update_fields=["status", "assigned_to", "updated_time"] if hasattr(task, 'updated_time') else ["status", "assigned_to"])
                 return JsonResponse({
                     "id": task.id,
                     "status": task.status,
@@ -241,14 +241,14 @@ def search(request):
             project = None
 
     if q:
-        # If q looks like an ISO date (YYYY-MM-DD), filter by due_date (DateField)
+
         try:
             q_date = dt_date.fromisoformat(q)
             tasks = tasks.filter(due_date=q_date)
         except ValueError:
             tasks = tasks.filter(Q(title__icontains=q) | Q(description__icontains=q))
 
-    # Optional date filter (due_date exact match)
+
     if date_str:
         try:
             d = dt_date.fromisoformat(date_str)
@@ -256,7 +256,7 @@ def search(request):
         except ValueError:
             pass
 
-    # Apply sorting based on query param
+
     tasks = apply_sort(tasks, sort_key)
 
     todo_tasks = tasks.filter(status='todo')

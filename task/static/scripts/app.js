@@ -119,7 +119,7 @@ const NotificationManager = (function () {
     toast.style.minWidth = "280px";
     toast.style.maxWidth = "360px";
     toast.style.borderRadius = "14px";
-    // Transparent background so the inner notification-option gradient is visible (blue/red/green/yellow)
+
     toast.style.background = "transparent";
     toast.style.boxShadow = "none";
     toast.classList.add("toast-enter");
@@ -201,7 +201,7 @@ const NotificationManager = (function () {
       if (dropdown) dropdown.style.display = "block";
     });
 
-// Handle status change via the hover check button beside task title
+
 document.addEventListener("click", function (e) {
   const btn = e.target.closest(".task__title--check");
   if (!btn) return;
@@ -217,7 +217,7 @@ document.addEventListener("click", function (e) {
   const csrf = document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
   if (csrf) formData.append("csrfmiddlewaretoken", csrf);
 
-  // Animate move-out first
+
   let animated = false;
   const runRequest = () => {
     fetch(editUrl, {
@@ -253,7 +253,7 @@ document.addEventListener("click", function (e) {
                 const taskContainer = document.getElementById("task-container");
                 if (taskContainer) {
                   taskContainer.innerHTML = html;
-                  // Apply enter animation to new tasks briefly
+
                   requestAnimationFrame(() => {
                     taskContainer
                       .querySelectorAll(".task")
@@ -288,7 +288,7 @@ document.addEventListener("click", function (e) {
     runRequest();
   };
   card.addEventListener("animationend", onAnimEnd, { once: true });
-  // Fallback in case animationend doesn't fire
+
   setTimeout(onAnimEnd, 320);
 });
 
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  // Set header date to today's date in the same format used by the calendar
+
   try {
     const timeEl = document.querySelector(".nav__item--date .date");
     if (timeEl) {
@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const mm = monthNames[now.getMonth()];
       const yyyy = now.getFullYear();
       timeEl.textContent = `${dd} ${mm} ${yyyy}`;
-      // Optional: keep semantic datetime attribute in ISO format
+
       try { timeEl.setAttribute("datetime", `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`); } catch {}
     }
   } catch {}
@@ -483,7 +483,7 @@ function toggleSortOptions() {
   sortWrapper.classList.toggle("open", !isOpen);
 }
 
-// Map selected UI label to backend sort key
+
 function getSelectedSortKey() {
   const el = document.querySelector(".sort__text");
   const txt = (el && el.textContent ? el.textContent : "").trim().toLowerCase();
@@ -494,7 +494,7 @@ function getSelectedSortKey() {
   return "newest";
 }
 
-// Append current sort to any URL
+
 function withSort(url) {
   const key = getSelectedSortKey();
   try {
@@ -537,13 +537,13 @@ function selectOption(option) {
   }
   if (sortWrapper) sortWrapper.classList.remove("open");
 
-  // After selecting sort, reload current list (search or current project)
+
   const form = document.getElementById("search-form");
   const input = document.getElementById("search-input");
   if (form && input && input.value && input.value.trim().length > 0) {
     performSearch(input.value);
   } else {
-    // refresh active project list
+
     let activeLi = null;
     const activeSpan = document.querySelector(
       ".project-link span.status-project__item--active"
