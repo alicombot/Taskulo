@@ -2,314 +2,635 @@
 
 <!-- To Do Column -->
 <div class="content__items">
-    <div class="items__head">
-        <p class="items__head--text">To do ({{ todo_count|default:0 }})</p>
-        <div class="add-task">
-            <p class="add-task__text">Add new task</p>
-            <div class="plus">
-                <svg width="7" height="7" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g opacity="0.4">
-                        <path d="M9 5L1 5" stroke="#1C1D22" stroke-width="2" stroke-linecap="round"></path>
-                        <path d="M5 9L5 1" stroke="#1C1D22" stroke-width="2" stroke-linecap="round"></path>
-                    </g>
-                </svg>
-            </div>
-        </div>
+  <div class="items__head">
+    <div class="items__head-left">
+      <p class="items__head--text">To do ({{ todo_count|default:0 }})</p>
     </div>
-
-    <div class="task task--form" id="server-task-form" style="display: none">
-        <div class="task-form__header"
-             style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
-            <h4 style="margin: 0; font-family: 'Exo2-Bold'; font-size: 1.4rem; color: var(--text-first-color);">Add
-                Task</h4>
-        </div>
-        <form method="post" action="{% url 'task:create_task' %}" class="task-form" novalidate>
-            {% csrf_token %}
-            {% if project %}
-                <input type="hidden" name="project" value="{{ project.id }}"/>
-            {% endif %}
-            <div class="task-form__row">
-                <input class="task-form__input" name="title" type="text" placeholder="Task title" required/>
-            </div>
-            <div class="task-form__row">
-                <textarea class="task-form__textarea" name="description" rows="2"
-                          placeholder="Short description"></textarea>
-            </div>
-            <div class="task-form__grid">
-                <input class="task-form__input" name="due_date" type="date"/>
-                <select class="task-form__select" name="priority">
-                    <option value="normal" selected>Priority: Normal</option>
-                    <option value="high">Priority: High</option>
-                    <option value="low">Priority: Low</option>
-                </select>
-            </div>
-            <div class="task-form__actions">
-                <button type="button" class="btn btn--ghost" data-action="cancel">Cancel</button>
-                <button type="submit" class="btn btn--primary">Add Task</button>
-            </div>
-        </form>
+    <div class="add-task">
+      <p class="add-task__text">Add new task</p>
+      <div class="plus">
+        <svg
+          width="7"
+          height="7"
+          viewBox="0 0 10 10"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g opacity="0.4">
+            <path
+              d="M9 5L1 5"
+              stroke="#1C1D22"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+            <path
+              d="M5 9L5 1"
+              stroke="#1C1D22"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+          </g>
+        </svg>
+      </div>
     </div>
+  </div>
 
-    {% for task in tasks %}
-        {% if task.status == 'todo' %}
-            <div class="task" data-id="{{ task.id }}" data-title="{{ task.title }}"
-                 data-description="{{ task.description|default:'' }}" data-due-date="{{ task.due_date|date:'Y-m-d' }}"
-                 data-priority="{{ task.priority }}" data-edit-url="{% url 'task:update_task' task.id %}"
-                 data-delete-url="{% url 'task:delete_task' task.id %}">
-                <div class="task__title">
-                    <h3>{{ task.title }}</h3>
-                    <div class="task__title--icon no-select" onclick="toggleActions({{ task.id }})"
-                         data-edit-url="{% url 'task:update_task' task.id %}" data-task-id="{{ task.id }}">
-                        <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="9" cy="1" r="1" fill="#1C1D22"></circle>
-                            <circle cx="5" cy="1" r="1" fill="#1C1D22"></circle>
-                            <circle cx="1" cy="1" r="1" fill="#1C1D22"></circle>
-                        </svg>
-                        <div id="task-options-{{ task.id }}" class="task-options" style="display: none">
-                            <div class="task-option">Delete</div>
-                            <div class="task-option">
-                                <form method="post" action="{% url 'task:update_task' task.id %}" class="inline">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="title" value="{{ task.title }}"/>
-                                    <input type="hidden" name="description" value="{{ task.description }}"/>
-                                    <input type="hidden" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}"/>
-                                    <input type="hidden" name="priority" value="{{ task.priority }}"/>
-                                    <button type="submit" class="task-option"
-                                            style="background: none; border: none; padding: 0; cursor: pointer; text-align: left;">
-                                        Edit
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="task__description">{{ task.description|default:"" }}</div>
-                <div class="task__progres">
-                    <div class="task__progres--icon">
-                        Progress
-                        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g opacity="0.5">
-                                <path d="M2.66666 4.66667C2.66666 4.29848 2.96513 4 3.33332 4H3.99999C4.36818 4 4.66666 4.29848 4.66666 4.66667C4.66666 5.03486 4.36818 5.33333 3.99999 5.33333H3.33332C2.96513 5.33333 2.66666 5.03486 2.66666 4.66667ZM5.99999 4.66667C5.99999 4.29848 6.29847 4 6.66666 4H12.6667C13.0348 4 13.3333 4.29848 13.3333 4.66667C13.3333 5.03486 13.0348 5.33333 12.6667 5.33333H6.66666C6.29847 5.33333 5.99999 5.03486 5.99999 4.66667ZM2.66666 8C2.66666 7.63181 2.96513 7.33333 3.33332 7.33333H3.99999C4.36818 7.33333 4.66666 7.63181 4.66666 8C4.66666 8.36819 4.36818 8.66667 3.99999 8.66667H3.33332C2.96513 8.66667 2.66666 8.36819 2.66666 8ZM5.99999 8C5.99999 7.63181 6.29847 7.33333 6.66666 7.33333H12.6667C13.0348 7.33333 13.3333 7.63181 13.3333 8C13.3333 8.36819 13.0348 8.66667 12.6667 8.66667H6.66666C6.29847 8.66667 5.99999 8.36819 5.99999 8ZM2.66666 11.3333C2.66666 10.9651 2.96513 10.6667 3.33332 10.6667H3.99999C4.36818 10.6667 4.66666 10.9651 4.66666 11.3333C4.66666 11.7015 4.36818 12 3.99999 12H3.33332C2.96513 12 2.66666 11.7015 2.66666 11.3333ZM5.99999 11.3333C5.99999 10.9651 6.29847 10.6667 6.66666 10.6667H12.6667C13.0348 10.6667 13.3333 10.9651 13.3333 11.3333C13.3333 11.7015 13.0348 12 12.6667 12H6.66666C6.29847 12 5.99999 11.7015 5.99999 11.3333Z"
-                                      fill="#1C1D22"></path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="task__progres--count">0/10</div>
-                </div>
-                <div class="progress-line__0"></div>
-                <div class="task__footer">
-                    <div class="task__footer--date">
-                        {% if task.due_date %}{{ task.due_date|date:"d M Y" }}{% endif %}
-                    </div>
-                    <div class="task__footer--tools">
-                        <div class="task__footer--message">
-                            <p class="message-text">0</p>
-                        </div>
-                        <div class="task__footer--attached">
-                            <p class="message-text">0</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-    {% if todo_count|default:0 == 0 %}
-        <div class="task" aria-disabled="true"
-             style="border:1px dashed var(--border-color, #2c2d33); background: rgba(255,255,255,0.02);">
-            <div class="task__title" style="display:flex; align-items:center; gap:.5rem;">
-                <div style="width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #6EE7F9 0%, #A78BFA 100%); color:#111; font-size:14px;">
-                    📝
-                </div>
-                <h3 style="margin:0; opacity:.9">No To Do tasks</h3>
-            </div>
-            <div class="task__description" style="opacity:.7">Use "Add new task" to get started on this project.</div>
+  <div class="task task--form" id="server-task-form" style="display: none">
+    <div
+      class="task-form__header"
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.6rem;
+      "
+    >
+      <h4
+        style="
+          margin: 0;
+          font-family: 'Exo2-Bold';
+          font-size: 1.4rem;
+          color: var(--text-first-color);
+        "
+      >
+        Add Task
+      </h4>
+    </div>
+    <form
+      method="post"
+      action="{% url 'task:create_task' %}"
+      class="task-form"
+      novalidate
+    >
+      {% csrf_token %} {% if project %}
+      <input type="hidden" name="project" value="{{ project.id }}" />
+      {% endif %}
+      <div class="task-form__row">
+        <input
+          class="task-form__input"
+          name="title"
+          type="text"
+          placeholder="Task title"
+          required
+        />
+      </div>
+      <div class="task-form__row">
+        <textarea
+          class="task-form__textarea"
+          name="description"
+          rows="2"
+          placeholder="Short description"
+        ></textarea>
+      </div>
+      <div class="task-form__grid">
+        <input class="task-form__input" name="due_date" type="date" />
+        <select class="task-form__select" name="priority">
+          <option value="normal" selected>Priority: Normal</option>
+          <option value="high">Priority: High</option>
+          <option value="low">Priority: Low</option>
+        </select>
+      </div>
+      <div class="task-form__actions">
+        <button type="button" class="btn btn--ghost" data-action="cancel">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn--primary">Add Task</button>
+      </div>
+    </form>
+  </div>
+
+  {% for task in tasks %} {% if task.status == 'todo' %}
+  <div
+    class="task task--adv"
+    data-id="{{ task.id }}"
+    data-status="{{ task.status }}"
+    data-title="{{ task.title }}"
+    data-description="{{ task.description|default:'' }}"
+    data-due-date="{{ task.due_date|date:'Y-m-d' }}"
+    data-priority="{{ task.priority }}"
+    data-edit-url="{% url 'task:update_task' task.id %}"
+    data-delete-url="{% url 'task:delete_task' task.id %}"
+  >
+    <div class="task__title">
+      <button
+        type="button"
+        class="task__title--check"
+        title="Mark in progress"
+        data-next-status="in progress"
+        aria-label="Move to in progress"
+      ></button>
+      <h3>{{ task.title }}</h3>
+      <div
+        class="task__title--icon no-select"
+        onclick="toggleActions({{ task.id }})"
+        data-edit-url="{% url 'task:update_task' task.id %}"
+        data-task-id="{{ task.id }}"
+      >
+        <svg
+          width="10"
+          height="2"
+          viewBox="0 0 10 2"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="9" cy="1" r="1" fill="#1C1D22"></circle>
+          <circle cx="5" cy="1" r="1" fill="#1C1D22"></circle>
+          <circle cx="1" cy="1" r="1" fill="#1C1D22"></circle>
+        </svg>
+        <div
+          id="task-options-{{ task.id }}"
+          class="task-options"
+          style="display: none"
+        >
+          <div class="task-option">Delete</div>
+          <div class="task-option">
+            <form
+              method="post"
+              action="{% url 'task:update_task' task.id %}"
+              class="inline"
+            >
+              {% csrf_token %}
+              <input type="hidden" name="title" value="{{ task.title }}" />
+              <input
+                type="hidden"
+                name="description"
+                value="{{ task.description }}"
+              />
+              <input
+                type="hidden"
+                name="due_date"
+                value="{{ task.due_date|date:'Y-m-d' }}"
+              />
+              <input
+                type="hidden"
+                name="priority"
+                value="{{ task.priority }}"
+              />
+              <button
+                type="submit"
+                class="task-option"
+                style="
+                  background: none;
+                  border: none;
+                  padding: 0;
+                  cursor: pointer;
+                  text-align: left;
+                "
+              >
+                Edit
+              </button>
+            </form>
+          </div>
         </div>
-    {% endif %}
+      </div>
+    </div>
+    <div class="task__description">{{ task.description|default:"" }}</div>
+    <div class="task__progres">
+      <div class="task__progres--icon">
+        Progress
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g opacity="0.5">
+            <path
+              d="M2.66666 4.66667C2.66666 4.29848 2.96513 4 3.33332 4H3.99999C4.36818 4 4.66666 4.29848 4.66666 4.66667C4.66666 5.03486 4.36818 5.33333 3.99999 5.33333H3.33332C2.96513 5.33333 2.66666 5.03486 2.66666 4.66667ZM5.99999 4.66667C5.99999 4.29848 6.29847 4 6.66666 4H12.6667C13.0348 4 13.3333 4.29848 13.3333 4.66667C13.3333 5.03486 13.0348 5.33333 12.6667 5.33333H6.66666C6.29847 5.33333 5.99999 5.03486 5.99999 4.66667ZM2.66666 8C2.66666 7.63181 2.96513 7.33333 3.33332 7.33333H3.99999C4.36818 7.33333 4.66666 7.63181 4.66666 8C4.66666 8.36819 4.36818 8.66667 3.99999 8.66667H3.33332C2.96513 8.66667 2.66666 8.36819 2.66666 8ZM5.99999 8C5.99999 7.63181 6.29847 7.33333 6.66666 7.33333H12.6667C13.0348 7.33333 13.3333 7.63181 13.3333 8C13.3333 8.36819 13.0348 8.66667 12.6667 8.66667H6.66666C6.29847 8.66667 5.99999 8.36819 5.99999 8ZM2.66666 11.3333C2.66666 10.9651 2.96513 10.6667 3.33332 10.6667H3.99999C4.36818 10.6667 4.66666 10.9651 4.66666 11.3333C4.66666 11.7015 4.36818 12 3.99999 12H3.33332C2.96513 12 2.66666 11.7015 2.66666 11.3333ZM5.99999 11.3333C5.99999 10.9651 6.29847 10.6667 6.66666 10.6667H12.6667C13.0348 10.6667 13.3333 10.9651 13.3333 11.3333C13.3333 11.7015 13.0348 12 12.6667 12H6.66666C6.29847 12 5.99999 11.7015 5.99999 11.3333Z"
+              fill="#1C1D22"
+            ></path>
+          </g>
+        </svg>
+      </div>
+      <div class="task__progres--count">0/10</div>
+    </div>
+    <div class="progress-line__0"></div>
+    <div class="task__footer">
+      <div class="task__footer--date">
+        {% if task.due_date %}{{ task.due_date|date:"d M Y" }}{% endif %}
+      </div>
+      <div class="task__footer--tools">
+        <div class="task__footer--message">
+          <p class="message-text">0</p>
+        </div>
+        <div class="task__footer--attached">
+          <p class="message-text">0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %} {% endfor %} {% if todo_count|default:0 == 0 %}
+  <div class="task task--empty" aria-disabled="true">
+    <div class="empty-state empty-state--todo">
+      <div class="empty-state__icon" aria-hidden="true">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="4"
+            y="3"
+            width="16"
+            height="18"
+            rx="3"
+            ry="3"
+            stroke="currentColor"
+            stroke-width="1.6"
+          />
+          <path
+            d="M8 7H16"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+          <path
+            d="M8 12H16"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+          <path
+            d="M8 17H13"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+      <div class="empty-state__content">
+        <h3 class="empty-state__title">No To Do tasks</h3>
+        <p class="empty-state__desc">.Use "Add new task" to get started</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 </div>
 
 <!-- In Progress Column -->
 <div class="content__items">
-    <div class="items__head">
-        <p class="items__head--text">In progress ({{ in_progress_count|default:0 }})</p>
-        <div class="add-task">
-            <p class="add-task__text">Add new task</p>
-            <div class="plus">
-                <svg width="7" height="7" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g opacity="0.4">
-                        <path d="M9 5L1 5" stroke="#1C1D22" stroke-width="2" stroke-linecap="round"></path>
-                        <path d="M5 9L5 1" stroke="#1C1D22" stroke-width="2" stroke-linecap="round"></path>
-                    </g>
-                </svg>
-            </div>
-        </div>
+  <div class="items__head">
+    <div class="items__head-left">
+      <p class="items__head--text">
+        In progress ({{ in_progress_count|default:0 }})
+      </p>
     </div>
+    <div class="add-task">
+      <p class="add-task__text">Add new task</p>
+      <div class="plus">
+        <svg
+          width="7"
+          height="7"
+          viewBox="0 0 10 10"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g opacity="0.4">
+            <path
+              d="M9 5L1 5"
+              stroke="#1C1D22"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+            <path
+              d="M5 9L5 1"
+              stroke="#1C1D22"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
 
-    {% for task in tasks %}
-        {% if task.status == 'in progress' %}
-            <div class="task" data-id="{{ task.id }}" data-title="{{ task.title }}"
-                 data-description="{{ task.description|default:'' }}" data-due-date="{{ task.due_date|date:'Y-m-d' }}"
-                 data-priority="{{ task.priority }}" data-edit-url="{% url 'task:update_task' task.id %}"
-                 data-delete-url="{% url 'task:delete_task' task.id %}">
-                <div class="task__title">
-                    <h3>{{ task.title }}</h3>
-                    <div class="task__title--icon no-select" onclick="toggleActions({{ task.id }})"
-                         data-edit-url="{% url 'task:update_task' task.id %}" data-task-id="{{ task.id }}">
-                        <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="9" cy="1" r="1" fill="#1C1D22"></circle>
-                            <circle cx="5" cy="1" r="1" fill="#1C1D22"></circle>
-                            <circle cx="1" cy="1" r="1" fill="#1C1D22"></circle>
-                        </svg>
-                        <div id="task-options-{{ task.id }}" class="task-options" style="display: none">
-                            <div class="task-option">Delete</div>
-                            <div class="task-option">
-                                <form method="post" action="{% url 'task:update_task' task.id %}" class="inline">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="title" value="{{ task.title }}"/>
-                                    <input type="hidden" name="description" value="{{ task.description }}"/>
-                                    <input type="hidden" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}"/>
-                                    <input type="hidden" name="priority" value="{{ task.priority }}"/>
-                                    <button type="submit" class="task-option"
-                                            style="background: none; border: none; padding: 0; cursor: pointer; text-align: left;">
-                                        Edit
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="task__description">{{ task.description|default:"" }}</div>
-                <div class="task__progres">
-                    <div class="task__progres--icon">
-                        Progress
-                        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g opacity="0.5">
-                                <path d="M2.66666 4.66667C2.66666 4.29848 2.96513 4 3.33332 4H3.99999C4.36818 4 4.66666 4.29848 4.66666 4.66667C4.66666 5.03486 4.36818 5.33333 3.99999 5.33333H3.33332C2.96513 5.33333 2.66666 5.03486 2.66666 4.66667ZM5.99999 4.66667C5.99999 4.29848 6.29847 4 6.66666 4H12.6667C13.0348 4 13.3333 4.29848 13.3333 4.66667C13.3333 5.03486 13.0348 5.33333 12.6667 5.33333H6.66666C6.29847 5.33333 5.99999 5.03486 5.99999 4.66667ZM2.66666 8C2.66666 7.63181 2.96513 7.33333 3.33332 7.33333H3.99999C4.36818 7.33333 4.66666 7.63181 4.66666 8C4.66666 8.36819 4.36818 8.66667 3.99999 8.66667H3.33332C2.96513 8.66667 2.66666 8.36819 2.66666 8ZM2.66666 11.3333C2.66666 10.9651 2.96513 10.6667 3.33332 10.6667H3.99999C4.36818 10.6667 4.66666 10.9651 4.66666 11.3333C4.66666 11.7015 4.36818 12 3.99999 12H3.33332C2.96513 12 2.66666 11.7015 2.66666 11.3333ZM5.99999 11.3333C5.99999 10.9651 6.29847 10.6667 6.66666 10.6667H12.6667C13.0348 10.6667 13.3333 10.9651 13.3333 11.3333C13.3333 11.7015 13.0348 12 12.6667 12H6.66666C6.29847 12 5.99999 11.7015 5.99999 11.3333Z"
-                                      fill="#1C1D22"></path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="task__progres--count">3/10</div>
-                </div>
-                <div class="progress-line__30"></div>
-                <div class="task__footer">
-                    <div class="task__footer--date">
-                        {% if task.due_date %}{{ task.due_date|date:"d M Y" }}{% endif %}
-                    </div>
-                    <div class="task__footer--tools">
-                        <div class="task__footer--message">
-                            <p class="message-text">0</p>
-                        </div>
-                        <div class="task__footer--attached">
-                            <p class="message-text">0</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-    {% if in_progress_count|default:0 == 0 %}
-        <div class="task" aria-disabled="true"
-             style="border:1px dashed var(--border-color, #2c2d33); background: rgba(255,255,255,0.02);">
-            <div class="task__title" style="display:flex; align-items:center; gap:.5rem;">
-                <div style="width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #FDE68A 0%, #FCA5A5 100%); color:#111; font-size:14px;">
-                    ⏳
-                </div>
-                <h3 style="margin:0; opacity:.9">Nothing in progress</h3>
-            </div>
-            <div class="task__description" style="opacity:.7">Pick a task and move it forward.</div>
+  {% for task in tasks %} {% if task.status == 'in progress' %}
+  <div
+    class="task task--adv"
+    data-id="{{ task.id }}"
+    data-status="{{ task.status }}"
+    data-title="{{ task.title }}"
+    data-description="{{ task.description|default:'' }}"
+    data-due-date="{{ task.due_date|date:'Y-m-d' }}"
+    data-priority="{{ task.priority }}"
+    data-edit-url="{% url 'task:update_task' task.id %}"
+    data-delete-url="{% url 'task:delete_task' task.id %}"
+  >
+    <div class="task__title">
+      <button
+        type="button"
+        class="task__title--check"
+        title="Mark done"
+        data-next-status="done"
+        aria-label="Move to done"
+      ></button>
+      <h3>{{ task.title }}</h3>
+      <div
+        class="task__title--icon no-select"
+        onclick="toggleActions({{ task.id }})"
+        data-edit-url="{% url 'task:update_task' task.id %}"
+        data-task-id="{{ task.id }}"
+      >
+        <svg
+          width="10"
+          height="2"
+          viewBox="0 0 10 2"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="9" cy="1" r="1" fill="#1C1D22"></circle>
+          <circle cx="5" cy="1" r="1" fill="#1C1D22"></circle>
+          <circle cx="1" cy="1" r="1" fill="#1C1D22"></circle>
+        </svg>
+        <div
+          id="task-options-{{ task.id }}"
+          class="task-options"
+          style="display: none"
+        >
+          <div class="task-option">Delete</div>
+          <div class="task-option">
+            <form
+              method="post"
+              action="{% url 'task:update_task' task.id %}"
+              class="inline"
+            >
+              {% csrf_token %}
+              <input type="hidden" name="title" value="{{ task.title }}" />
+              <input
+                type="hidden"
+                name="description"
+                value="{{ task.description }}"
+              />
+              <input
+                type="hidden"
+                name="due_date"
+                value="{{ task.due_date|date:'Y-m-d' }}"
+              />
+              <input
+                type="hidden"
+                name="priority"
+                value="{{ task.priority }}"
+              />
+              <button
+                type="submit"
+                class="task-option"
+                style="
+                  background: none;
+                  border: none;
+                  padding: 0;
+                  cursor: pointer;
+                  text-align: left;
+                "
+              >
+                Edit
+              </button>
+            </form>
+          </div>
         </div>
-    {% endif %}
+      </div>
+    </div>
+    <div class="task__description">{{ task.description|default:"" }}</div>
+    <div class="task__progres">
+      <div class="task__progres--icon">
+        Progress
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g opacity="0.5">
+            <path
+              d="M2.66666 4.66667C2.66666 4.29848 2.96513 4 3.33332 4H3.99999C4.36818 4 4.66666 4.29848 4.66666 4.66667C4.66666 5.03486 4.36818 5.33333 3.99999 5.33333H3.33332C2.96513 5.33333 2.66666 5.03486 2.66666 4.66667ZM5.99999 4.66667C5.99999 4.29848 6.29847 4 6.66666 4H12.6667C13.0348 4 13.3333 4.29848 13.3333 4.66667C13.3333 5.03486 13.0348 5.33333 12.6667 5.33333H6.66666C6.29847 5.33333 5.99999 5.03486 5.99999 4.66667ZM2.66666 8C2.66666 7.63181 2.96513 7.33333 3.33332 7.33333H3.99999C4.36818 7.33333 4.66666 7.63181 4.66666 8C4.66666 8.36819 4.36818 8.66667 3.99999 8.66667H3.33332C2.96513 8.66667 2.66666 8.36819 2.66666 8ZM5.99999 8C5.99999 7.63181 6.29847 7.33333 6.66666 7.33333H12.6667C13.0348 7.33333 13.3333 7.63181 13.3333 8C13.3333 8.36819 13.0348 8.66667 12.6667 8.66667H6.66666C6.29847 8.66667 5.99999 8.36819 5.99999 8ZM2.66666 11.3333C2.66666 10.9651 2.96513 10.6667 3.33332 10.6667H3.99999C4.36818 10.6667 4.66666 10.9651 4.66666 11.3333C4.66666 11.7015 4.36818 12 3.99999 12H3.33332C2.96513 12 2.66666 11.7015 2.66666 11.3333ZM5.99999 11.3333C5.99999 10.9651 6.29847 10.6667 6.66666 10.6667H12.6667C13.0348 10.6667 13.3333 10.9651 13.3333 11.3333C13.3333 11.7015 13.0348 12 12.6667 12H6.66666C6.29847 12 5.99999 11.7015 5.99999 11.3333Z"
+              fill="#1C1D22"
+            ></path>
+          </g>
+        </svg>
+      </div>
+      <div class="task__progres--count">3/10</div>
+    </div>
+    <div class="progress-line__30"></div>
+    <div class="task__footer">
+      <div class="task__footer--date">
+        {% if task.due_date %}{{ task.due_date|date:"d M Y" }}{% endif %}
+      </div>
+      <div class="task__footer--tools">
+        <div class="task__footer--message">
+          <p class="message-text">0</p>
+        </div>
+        <div class="task__footer--attached">
+          <p class="message-text">0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %} {% endfor %} {% if in_progress_count|default:0 == 0 %}
+  <div class="task task--empty" aria-disabled="true">
+    <div class="empty-state empty-state--progress">
+      <div class="empty-state__icon" aria-hidden="true">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 2H18V4L14 8L18 12V22H6V12L10 8L6 4V2Z"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+      <div class="empty-state__content">
+        <h3 class="empty-state__title">Nothing in progress</h3>
+        <p class="empty-state__desc">.Pick a task and move it forward</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 </div>
 
 <!-- Done Column -->
 <div class="content__items">
-    <div class="items__head">
-        <p class="items__head--text">Done ({{ done_count|default:0 }})</p>
-        <div class="add-task">
-            <p class="add-task__text">Add new task</p>
-            <div class="plus">
-                <svg width="7" height="7" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g opacity="0.4">
-                        <path d="M9 5L1 5" stroke="#1C1D22" stroke-width="2" stroke-linecap="round"></path>
-                        <path d="M5 9L5 1" stroke="#1C1D22" stroke-width="2" stroke-linecap="round"></path>
-                    </g>
-                </svg>
-            </div>
-        </div>
+  <div class="items__head">
+    <div class="items__head-left">
+      <p class="items__head--text">Done ({{ done_count|default:0 }})</p>
     </div>
+    <div class="add-task">
+      <p class="add-task__text">Add new task</p>
+      <div class="plus">
+        <svg
+          width="7"
+          height="7"
+          viewBox="0 0 10 10"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g opacity="0.4">
+            <path
+              d="M9 5L1 5"
+              stroke="#1C1D22"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+            <path
+              d="M5 9L5 1"
+              stroke="#1C1D22"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
 
-    {% for task in tasks %}
-        {% if task.status == 'done' %}
-            <div class="task" data-id="{{ task.id }}" data-title="{{ task.title }}"
-                 data-description="{{ task.description|default:'' }}" data-due-date="{{ task.due_date|date:'Y-m-d' }}"
-                 data-priority="{{ task.priority }}" data-edit-url="{% url 'task:update_task' task.id %}">
-                <div class="task__title">
-                    <h3>{{ task.title }}</h3>
-                    <div class="task__title--icon no-select" onclick="toggleActions({{ task.id }})"
-                         data-edit-url="{% url 'task:update_task' task.id %}" data-task-id="{{ task.id }}">
-                        <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="9" cy="1" r="1" fill="#1C1D22"></circle>
-                            <circle cx="5" cy="1" r="1" fill="#1C1D22"></circle>
-                            <circle cx="1" cy="1" r="1" fill="#1C1D22"></circle>
-                        </svg>
-                        <div id="task-options-{{ task.id }}" class="task-options" style="display: none">
-                            <div class="task-option">Delete</div>
-                            <div class="task-option">
-                                <form method="post" action="{% url 'task:update_task' task.id %}" class="inline">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="title" value="{{ task.title }}"/>
-                                    <input type="hidden" name="description" value="{{ task.description }}"/>
-                                    <input type="hidden" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}"/>
-                                    <input type="hidden" name="priority" value="{{ task.priority }}"/>
-                                    <button type="submit" class="task-option"
-                                            style="background: none; border: none; padding: 0; cursor: pointer; text-align: left;">
-                                        Edit
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="task__description">{{ task.description|default:"" }}</div>
-                <div class="task__progres">
-                    <div class="task__progres--icon">
-                        Progress
-                        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g opacity="0.5">
-                                <path d="M2.66666 4.66667C2.66666 4.29848 2.96513 4 3.33332 4H3.99999C4.36818 4 4.66666 4.29848 4.66666 4.66667C4.66666 5.03486 4.36818 5.33333 3.99999 5.33333H3.33332C2.96513 5.33333 2.66666 5.03486 2.66666 4.66667ZM5.99999 4.66667C5.99999 4.29848 6.29847 4 6.66666 4H12.6667C13.0348 4 13.3333 4.29848 13.3333 4.66667C13.3333 5.03486 13.0348 5.33333 12.6667 5.33333H6.66666C6.29847 5.33333 5.99999 5.03486 5.99999 4.66667ZM2.66666 8C2.66666 7.63181 2.96513 7.33333 3.33332 7.33333H3.99999C4.36818 7.33333 4.66666 7.63181 4.66666 8C4.66666 8.36819 4.36818 8.66667 3.99999 8.66667H3.33332C2.96513 8.66667 2.66666 8.36819 2.66666 8ZM2.66666 11.3333C2.66666 10.9651 2.96513 10.6667 3.33332 10.6667H3.99999C4.36818 10.6667 4.66666 10.9651 4.66666 11.3333C4.66666 11.7015 4.36818 12 3.99999 12H3.33332C2.96513 12 2.66666 11.7015 2.66666 11.3333ZM5.99999 11.3333C5.99999 10.9651 6.29847 10.6667 6.66666 10.6667H12.6667C13.0348 10.6667 13.3333 10.9651 13.3333 11.3333C13.3333 11.7015 13.0348 12 12.6667 12H6.66666C6.29847 12 5.99999 11.7015 5.99999 11.3333Z"
-                                      fill="#1C1D22"></path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="task__progres--count">10/10</div>
-                </div>
-                <div class="progress-line__100"></div>
-                <div class="task__footer">
-                    <div class="task__footer--date">
-                        {% if task.due_date %}{{ task.due_date|date:"d M Y" }}{% endif %}
-                    </div>
-                    <div class="task__footer--tools">
-                        <div class="task__footer--message">
-                            <p class="message-text">0</p>
-                        </div>
-                        <div class="task__footer--attached">
-                            <p class="message-text">0</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-    {% if done_count|default:0 == 0 %}
-        <div class="task" aria-disabled="true"
-             style="border:1px dashed var(--border-color, #2c2d33); background: rgba(255,255,255,0.02);">
-            <div class="task__title" style="display:flex; align-items:center; gap:.5rem;">
-                <div style="width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #34D399 0%, #60A5FA 100%); color:#111; font-size:14px;">
-                    ✅
-                </div>
-                <h3 style="margin:0; opacity:.9">No completed tasks yet</h3>
-            </div>
-            <div class="task__description" style="opacity:.7">Finish a task to celebrate your progress here.</div>
+  {% for task in tasks %} {% if task.status == 'done' %}
+  <div
+    class="task"
+    data-id="{{ task.id }}"
+    data-status="{{ task.status }}"
+    data-title="{{ task.title }}"
+    data-description="{{ task.description|default:'' }}"
+    data-due-date="{{ task.due_date|date:'Y-m-d' }}"
+    data-priority="{{ task.priority }}"
+    data-edit-url="{% url 'task:update_task' task.id %}"
+    data-delete-url="{% url 'task:delete_task' task.id %}"
+  >
+    <div class="task__title">
+      <h3>{{ task.title }}</h3>
+      <div
+        class="task__title--icon no-select"
+        onclick="toggleActions({{ task.id }})"
+        data-edit-url="{% url 'task:update_task' task.id %}"
+        data-task-id="{{ task.id }}"
+      >
+        <svg
+          width="10"
+          height="2"
+          viewBox="0 0 10 2"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="9" cy="1" r="1" fill="#1C1D22"></circle>
+          <circle cx="5" cy="1" r="1" fill="#1C1D22"></circle>
+          <circle cx="1" cy="1" r="1" fill="#1C1D22"></circle>
+        </svg>
+        <div
+          id="task-options-{{ task.id }}"
+          class="task-options"
+          style="display: none"
+        >
+          <div class="task-option">Delete</div>
+          <div class="task-option">
+            <form
+              method="post"
+              action="{% url 'task:update_task' task.id %}"
+              class="inline"
+            >
+              {% csrf_token %}
+              <input type="hidden" name="title" value="{{ task.title }}" />
+              <input
+                type="hidden"
+                name="description"
+                value="{{ task.description }}"
+              />
+              <input
+                type="hidden"
+                name="due_date"
+                value="{{ task.due_date|date:'Y-m-d' }}"
+              />
+              <input
+                type="hidden"
+                name="priority"
+                value="{{ task.priority }}"
+              />
+              <button
+                type="submit"
+                class="task-option"
+                style="
+                  background: none;
+                  border: none;
+                  padding: 0;
+                  cursor: pointer;
+                  text-align: left;
+                "
+              >
+                Edit
+              </button>
+            </form>
+          </div>
         </div>
-    {% endif %}
+      </div>
+    </div>
+    <div class="task__description">{{ task.description|default:"" }}</div>
+    <div class="task__progres">
+      <div class="task__progres--icon">
+        Progress
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g opacity="0.5">
+            <path
+              d="M2.66666 4.66667C2.66666 4.29848 2.96513 4 3.33332 4H3.99999C4.36818 4 4.66666 4.29848 4.66666 4.66667C4.66666 5.03486 4.36818 5.33333 3.99999 5.33333H3.33332C2.96513 5.33333 2.66666 5.03486 2.66666 4.66667ZM5.99999 4.66667C5.99999 4.29848 6.29847 4 6.66666 4H12.6667C13.0348 4 13.3333 4.29848 13.3333 4.66667C13.3333 5.03486 13.0348 5.33333 12.6667 5.33333H6.66666C6.29847 5.33333 5.99999 5.03486 5.99999 4.66667ZM2.66666 8C2.66666 7.63181 2.96513 7.33333 3.33332 7.33333H3.99999C4.36818 7.33333 4.66666 7.63181 4.66666 8C4.66666 8.36819 4.36818 8.66667 3.99999 8.66667H3.33332C2.96513 8.66667 2.66666 8.36819 2.66666 8ZM5.99999 8C5.99999 7.63181 6.29847 7.33333 6.66666 7.33333H12.6667C13.0348 7.33333 13.3333 7.63181 13.3333 8C13.3333 8.36819 13.0348 8.66667 12.6667 8.66667H6.66666C6.29847 8.66667 5.99999 8.36819 5.99999 8ZM2.66666 11.3333C2.66666 10.9651 2.96513 10.6667 3.33332 10.6667H3.99999C4.36818 10.6667 4.66666 10.9651 4.66666 11.3333C4.66666 11.7015 4.36818 12 3.99999 12H3.33332C2.96513 12 2.66666 11.7015 2.66666 11.3333ZM5.99999 11.3333C5.99999 10.9651 6.29847 10.6667 6.66666 10.6667H12.6667C13.0348 10.6667 13.3333 10.9651 13.3333 11.3333C13.3333 11.7015 13.0348 12 12.6667 12H6.66666C6.29847 12 5.99999 11.7015 5.99999 11.3333Z"
+              fill="#1C1D22"
+            ></path>
+          </g>
+        </svg>
+      </div>
+      <div class="task__progres--count">10/10</div>
+    </div>
+    <div class="progress-line__100"></div>
+    <div class="task__footer">
+      <div class="task__footer--date">
+        {% if task.due_date %}{{ task.due_date|date:"d M Y" }}{% endif %}
+      </div>
+      <div class="task__footer--tools">
+        <div class="task__footer--message">
+          <p class="message-text">0</p>
+        </div>
+        <div class="task__footer--attached">
+          <p class="message-text">0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %} {% endfor %} {% if done_count|default:0 == 0 %}
+  <div class="task task--empty" aria-disabled="true">
+    <div class="empty-state empty-state--done">
+      <div class="empty-state__icon" aria-hidden="true">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 2L14.8 8.3L22 9.2L16.8 13.9L18.2 21L12 17.6L5.8 21L7.2 13.9L2 9.2L9.2 8.3L12 2Z"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+      <div class="empty-state__content">
+        <h3 class="empty-state__title">No completed tasks yet</h3>
+        <p class="empty-state__desc">
+          .Finish a task to celebrate your progress
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 </div>
