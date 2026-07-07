@@ -1,64 +1,89 @@
-<header class="header">
+<header id="site-header" class="landing-header sticky top-0 z-50">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <nav class="flex h-16 sm:h-[4.5rem] items-center justify-between gap-4">
+            <a href="{% url 'landing:landing' %}" class="site-logo flex items-center gap-3 shrink-0 group">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-brand transition-transform duration-300 group-hover:scale-105">
+                    <svg class="h-5 w-5 text-white" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M24 8.88887L14 4V5.46663L22.5 9.62219L14 13.7777V26L24 21.1111V8.88887Z" fill="currentColor"/>
+                        <path d="M0 17.1111L10 22V20.5334L1.49996 16.3778L10 12.2223V0L0 4.88888V17.1111Z" fill="currentColor"/>
+                    </svg>
+                </span>
+                <span class="text-xl font-bold tracking-tight text-[#1C1D22] dark:text-white">Taskulo</span>
+            </a>
 
-        <div class="container">
-
-            <nav class="nav">
-                <div class="nav__logo">
-                    Taskulo
-                    <svg width="24" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M24 8.88887L14 4V5.46663L22.5 9.62219L14 13.7777V26L24 21.1111V8.88887Z" fill="white"/>
-                        <path d="M0 17.1111L10 22V20.5334L1.49996 16.3778L10 12.2223V0L0 4.88888V17.1111Z" fill="white"/>
-                        </svg>
+            <div id="nav-menu" class="hidden lg:flex lg:items-center lg:gap-8">
+                <ul class="flex items-center gap-1">
+                    <li data-section="home" class="menu__item">
+                        <a href="{% url 'landing:landing' %}#home" class="menu__link px-3 py-2 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8] hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Home</a>
+                    </li>
+                    <li data-section="aboutus" class="menu__item">
+                        <a href="{% url 'landing:landing' %}#aboutus" class="menu__link px-3 py-2 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8] hover:text-brand-500 dark:hover:text-brand-400 transition-colors">About us</a>
+                    </li>
+                    <li data-section="our-feature" class="menu__item">
+                        <a href="{% url 'landing:landing' %}#our-feature" class="menu__link px-3 py-2 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8] hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Our feature</a>
+                    </li>
+                    <li data-section="how-it-work" class="menu__item">
+                        <a href="{% url 'landing:landing' %}#how-it-work" class="menu__link px-3 py-2 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8] hover:text-brand-500 dark:hover:text-brand-400 transition-colors">How it works</a>
+                    </li>
+                    <li data-section="start-planing" class="menu__item">
+                        <a href="{% url 'landing:landing' %}#start-planing" class="menu__link px-3 py-2 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8] hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Contact Us</a>
+                    </li>
+                </ul>
+                <div class="flex items-center gap-2.5 ml-2">
+                    <a href="{% url 'account:user_login' %}" class="inline-flex h-10 items-center rounded-xl border border-[#d3d6e4] dark:border-[#2e3654] px-4 text-sm font-semibold text-[#1C1D22] dark:text-[#e8eaf0] hover:border-brand-500/50 hover:text-brand-500 transition-all">Login</a>
+                    <a href="{% url 'account:sign_up' %}" class="inline-flex h-10 items-center rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 text-sm font-semibold text-white shadow-brand hover:from-brand-600 hover:to-brand-700 transition-all">Sign Up</a>
                 </div>
+            </div>
 
+            <div class="flex items-center gap-3">
+                <button id="theme-toggle" type="button" class="theme-switch" role="switch" aria-checked="false" aria-label="Toggle light and dark theme">
+                    <span class="theme-switch-track">
+                        <span class="theme-switch-thumb">
+                            <svg class="theme-switch-icon theme-switch-icon--sun" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/>
+                            </svg>
+                            <svg class="theme-switch-icon theme-switch-icon--moon" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>
+                            </svg>
+                        </span>
+                    </span>
+                </button>
 
-                <div class="nav__content">
+                <button id="nav-toggle" type="button"
+                        class="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#d3d6e4] dark:border-[#2e3654] text-[#1C1D22] dark:text-[#e8eaf0] hover:bg-white/60 dark:hover:bg-[#252d45] transition-colors"
+                        aria-expanded="false" aria-controls="nav-mobile-panel" aria-label="Toggle navigation">
+                    <svg id="nav-toggle-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                    </svg>
+                    <svg id="nav-toggle-close" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </div>
 
-                    <ul class="menu ">
-
-                        <li data-section="home"  class="menu__item">
-                            <a href="{% url 'landing:landing' %}#home" class="menu__link">
-                                Home
-                            </a>
-                        </li>
-                        <li data-section="aboutus"  class="menu__item">
-                            <a href="{% url 'landing:landing' %}#aboutus" class="menu__link">
-                                About us
-                            </a>
-                        </li>
-                        <li data-section="our-feature"  class="menu__item">
-                            <a href="{% url 'landing:landing' %}#our-feature" class="menu__link">
-                                Our feature
-                            </a>
-                        </li>
-                        <li data-section="how-it-work"  class="menu__item">
-                            <a href="{% url 'landing:landing' %}#how-it-work" class="menu__link">
-                                How it works
-                            </a>
-                        </li>
-                        <li data-section="start-planing"  class="menu__item">
-                            <a href="{% url 'landing:landing' %}#start-planing" class="menu__link">
-                                Contact Us
-                            </a>
-                        </li>
-
-                    </ul>
-
-                    <div class="nav__btn">
-                        <div class="nav__btn--login">
-                            <a href="{% url 'account:user_login' %}">Login</a>
-                        </div>
-                        <div class="nav__btn--signup">
-                            <a href="{% url 'account:sign_up' %}">Sign Up</a>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
-            </nav>
-
+    <div id="nav-mobile-panel" class="lg:hidden hidden border-t border-[#d3d6e4] dark:border-[#2e3654] bg-white/95 dark:bg-[#1d233d]/95 backdrop-blur-md px-5 py-5">
+        <ul class="flex flex-col gap-1">
+            <li data-section="home" class="menu__item">
+                <a href="{% url 'landing:landing' %}#home" class="menu__link block rounded-lg px-3 py-2.5 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8]">Home</a>
+            </li>
+            <li data-section="aboutus" class="menu__item">
+                <a href="{% url 'landing:landing' %}#aboutus" class="menu__link block rounded-lg px-3 py-2.5 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8]">About us</a>
+            </li>
+            <li data-section="our-feature" class="menu__item">
+                <a href="{% url 'landing:landing' %}#our-feature" class="menu__link block rounded-lg px-3 py-2.5 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8]">Our feature</a>
+            </li>
+            <li data-section="how-it-work" class="menu__item">
+                <a href="{% url 'landing:landing' %}#how-it-work" class="menu__link block rounded-lg px-3 py-2.5 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8]">How it works</a>
+            </li>
+            <li data-section="start-planing" class="menu__item">
+                <a href="{% url 'landing:landing' %}#start-planing" class="menu__link block rounded-lg px-3 py-2.5 text-sm font-medium text-[#5c5e6b] dark:text-[#94a3b8]">Contact Us</a>
+            </li>
+        </ul>
+        <div class="flex flex-col gap-2.5 mt-4 pt-4 border-t border-[#d3d6e4] dark:border-[#2e3654]">
+            <a href="{% url 'account:user_login' %}" class="block rounded-xl border border-[#d3d6e4] dark:border-[#2e3654] px-4 py-2.5 text-center text-sm font-semibold">Login</a>
+            <a href="{% url 'account:sign_up' %}" class="block rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-2.5 text-center text-sm font-semibold text-white">Sign Up</a>
         </div>
-
+    </div>
 </header>

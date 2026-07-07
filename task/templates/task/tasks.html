@@ -1,5 +1,27 @@
-{% extends 'parent/base.html' %} {% block title %} {{ user.first_name }} {% endblock %} {% block content %}
+{% extends 'parent/base.html' %}
+
+{% block title %}{{ user.first_name }}{% endblock %}
+
+{% block content %}
 <main class="main">
-  <div class="content" id="task-container">{% include 'task/task.html' %}</div>
+    <div class="dashboard-workspace">
+        <div class="dashboard-page-head">
+            <div class="dashboard-page-head__text">
+                <p class="dashboard-eyebrow">Workspace</p>
+                <h1 class="dashboard-page-title">Task Board</h1>
+                <p class="dashboard-page-desc">Organize, track, and ship work across your projects.</p>
+            </div>
+            <div class="dashboard-quick-actions">
+                <button type="button" class="quick-action quick-action--primary add-task" aria-label="Create new task">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>New task</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="task-container" class="task-board-root">
+            {% include 'task/task.html' %}
+        </div>
+    </div>
 </main>
 {% endblock %}

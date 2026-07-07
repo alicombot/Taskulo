@@ -1,360 +1,241 @@
 {% load static %}
-<nav class="sidebar">
-    <ul class="menu-list">
-        <div class="logo-svg">
-            <a href="{% url 'task:index' %}" class="menu-list__link">
-                <svg class="sidebar__icon" width="24" height="26" viewBox="0 0 24 26" fill="none">
-                    <path d="M24 8.88887L14 4V5.46663L22.5 9.62219L14 13.7777V26L24 21.1111V8.88887Z"
-                          fill="white"></path>
-                    <path d="M0 17.1111L10 22V20.5334L1.49996 16.3778L10 12.2223V0L0 4.88888V17.1111Z"
-                          fill="white"></path>
-                </svg>
-            </a>
-        </div>
-        <li class="menu-list__item menu-list__item--active" data-content-id="#panel-home">
-            <a class="menu-list__link">
-                <svg class="sidebar__icon" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"></path>
-                </svg>
-            </a>
-        </li>
-        <li class="menu-list__item" data-content-id="#panel-account" id="panel-account-dash">
-            <a class="menu-list__link">
-                <svg class="sidebar__icon" width="22" height="22" viewBox="0 0 22 22" fill="none">
-                    <path d="M11 3.66671C8.97496 3.66671 7.33333 5.30833 7.33333 7.33337C7.33333 9.35842 8.97496 11 11 11C13.025 11 14.6667 9.35842 14.6667 7.33337C14.6667 5.30833 13.025 3.66671 11 3.66671ZM5.5 7.33337C5.5 4.29581 7.96243 1.83337 11 1.83337C14.0376 1.83337 16.5 4.29581 16.5 7.33337C16.5 10.3709 14.0376 12.8334 11 12.8334C7.96243 12.8334 5.5 10.3709 5.5 7.33337ZM7.33333 16.5C5.81455 16.5 4.58333 17.7313 4.58333 19.25C4.58333 19.7563 4.17293 20.1667 3.66667 20.1667C3.16041 20.1667 2.75 19.7563 2.75 19.25C2.75 16.7187 4.80203 14.6667 7.33333 14.6667H14.6667C17.198 14.6667 19.25 16.7187 19.25 19.25C19.25 19.7563 18.8396 20.1667 18.3333 20.1667C17.8271 20.1667 17.4167 19.7563 17.4167 19.25C17.4167 17.7313 16.1854 16.5 14.6667 16.5H7.33333Z"
-                          fill="white"></path>
-                </svg>
-            </a>
-        </li>
-        <li class="menu-list__item " data-content-id="#panel-messages">
-            <a class="menu-list__link">
-                <svg class="sidebar__icon" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"></path>
-                </svg>
-            </a>
-        </li>
-        
-    </ul>
-    <div class="sidebar__wrapper">
-        <a class="menu-list__link" id="panel-theme-toggle" data-action="toggle-theme" aria-label="Toggle theme">
-            <svg class="sidebar__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5" />
-                <path d="M12 1v2" />
-                <path d="M12 21v2" />
-                <path d="M4.22 4.22l1.42 1.42" />
-                <path d="M18.36 18.36l1.42 1.42" />
-                <path d="M1 12h2" />
-                <path d="M21 12h2" />
-                <path d="M4.22 19.78l1.42-1.42" />
-                <path d="M18.36 5.64l1.42-1.42" />
+<nav class="sidebar" aria-label="Main navigation">
+    <div class="sidebar__brand">
+        <a href="{% url 'task:index' %}" class="menu-list__link sidebar__logo" aria-label="Taskulo home">
+            <svg class="sidebar__icon" viewBox="0 0 24 26" fill="none" aria-hidden="true">
+                <path d="M24 8.88887L14 4V5.46663L22.5 9.62219L14 13.7777V26L24 21.1111V8.88887Z" fill="currentColor"/>
+                <path d="M0 17.1111L10 22V20.5334L1.49996 16.3778L10 12.2223V0L0 4.88888V17.1111Z" fill="currentColor"/>
             </svg>
         </a>
-        <a href="{% url 'account:log_out' %}">
-            <svg class="sidebar__icon" width="22" height="23" viewBox="0 0 22 22" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
+    </div>
 
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M10.0833 18.3333C10.0833 17.8271 9.67293 17.4167 9.16667 17.4167H4.58333V4.58333H9.16667C9.67293 4.58333 10.0833 4.17293 10.0833 3.66667C10.0833 3.1604 9.67293 2.75 9.16667 2.75H4.58333C3.57081 2.75 2.75 3.57081 2.75 4.58333V17.4167C2.75 18.4292 3.57081 19.25 4.58333 19.25H9.16667C9.67293 19.25 10.0833 18.8396 10.0833 18.3333Z"
-                      fill="white"></path>
-                <path d="M19.9041 11.6422C19.9891 11.5557 20.0534 11.4565 20.0971 11.3509C20.1416 11.2436 20.1663 11.126 20.1667 11.0027L20.1667 11L20.1667 10.9973C20.166 10.7636 20.0765 10.5301 19.8982 10.3518L16.2315 6.68515C15.8735 6.32717 15.2931 6.32717 14.9352 6.68515C14.5772 7.04313 14.5772 7.62353 14.9352 7.98151L17.037 10.0833H8.25C7.74374 10.0833 7.33333 10.4937 7.33333 11C7.33333 11.5063 7.74374 11.9167 8.25 11.9167H17.037L14.9352 14.0185C14.5772 14.3765 14.5772 14.9569 14.9352 15.3148C15.2931 15.6728 15.8735 15.6728 16.2315 15.3148L19.8975 11.6488L19.9041 11.6422Z"
-                      fill="white"></path>
-            </svg>
+    <ul class="menu-list sidebar__nav">
+        <li class="menu-list__item" data-content-id="#panel-home">
+            <button type="button" class="menu-list__link" aria-label="Projects" data-tooltip="Projects">
+                <svg class="sidebar__icon" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6Zm0 9.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25Zm13.5-9.75A2.25 2.25 0 0 1 18 3.75h2.25A2.25 2.25 0 0 1 22.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H18a2.25 2.25 0 0 1-2.25-2.25V6Zm0 9.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"/></svg>
+            </button>
+        </li>
+        <li class="menu-list__item" data-content-id="#panel-account" id="panel-account-dash">
+            <button type="button" class="menu-list__link" aria-label="Account" data-tooltip="Account">
+                <svg class="sidebar__icon" viewBox="0 0 22 22" fill="none"><path d="M11 3.66671C8.97496 3.66671 7.33333 5.30833 7.33333 7.33337C7.33333 9.35842 8.97496 11 11 11C13.025 11 14.6667 9.35842 14.6667 7.33337C14.6667 5.30833 13.025 3.66671 11 3.66671ZM7.33333 16.5C5.81455 16.5 4.58333 17.7313 4.58333 19.25C4.58333 19.7563 4.17293 20.1667 3.66667 20.1667C3.16041 20.1667 2.75 19.7563 2.75 19.25C2.75 16.7187 4.80203 14.6667 7.33333 14.6667H14.6667C17.198 14.6667 19.25 16.7187 19.25 19.25C19.25 19.7563 18.8396 20.1667 18.3333 20.1667C17.8271 20.1667 17.4167 19.7563 17.4167 19.25C17.4167 17.7313 16.1854 16.5 14.6667 16.5H7.33333Z" fill="currentColor"/></svg>
+            </button>
+        </li>
+        <li class="menu-list__item" data-content-id="#panel-messages">
+            <button type="button" class="menu-list__link" aria-label="Messages" data-tooltip="Messages">
+                <svg class="sidebar__icon" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>
+            </button>
+        </li>
+    </ul>
+
+    <div class="sidebar__wrapper">
+        <button type="button" id="panel-theme-toggle" class="theme-toggle menu-list__link" data-action="toggle-theme" aria-label="Toggle theme" role="switch" aria-checked="false">
+            <span class="theme-toggle__icons">
+                <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+        </button>
+        <a href="{% url 'account:log_out' %}" class="sidebar__logout" aria-label="Log out" data-tooltip="Log out">
+            <svg class="sidebar__icon" viewBox="0 0 22 22" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.0833 18.3333C10.0833 17.8271 9.67293 17.4167 9.16667 17.4167H4.58333V4.58333H9.16667C9.67293 4.58333 10.0833 4.17293 10.0833 3.66667C10.0833 3.1604 9.67293 2.75 9.16667 2.75H4.58333C3.57081 2.75 2.75 3.57081 2.75 4.58333V17.4167C2.75 18.4292 3.57081 19.25 4.58333 19.25H9.16667C9.67293 19.25 10.0833 18.8396 10.0833 18.3333Z" fill="currentColor"/><path d="M19.9041 11.6422C19.9891 11.5557 20.0534 11.4565 20.0971 11.3509C20.1416 11.2436 20.1663 11.126 20.1667 11.0027L20.1667 11L20.1667 10.9973C20.166 10.7636 20.0765 10.5301 19.8982 10.3518L16.2315 6.68515C15.8735 6.32717 15.2931 6.32717 14.9352 6.68515C14.5772 7.04313 14.5772 7.62353 14.9352 7.98151L17.037 10.0833H8.25C7.74374 10.0833 7.33333 10.4937 7.33333 11C7.33333 11.5063 7.74374 11.9167 8.25 11.9167H17.037L14.9352 14.0185C14.5772 14.3765 14.5772 14.9569 14.9352 15.3148C15.2931 15.6728 15.8735 15.6728 16.2315 15.3148L19.8975 11.6488L19.9041 11.6422Z" fill="currentColor"/></svg>
         </a>
     </div>
 </nav>
-<section class="panel">
-    <div class="panel__content content--show" id="panel-home">
+
+<section class="panel paenl--close" aria-label="Side panel">
+    <div class="panel__content" id="panel-home">
         <div class="panel__wrapper">
             <div class="panel__head">
-                <h2 class="panel__title">Projects</h2>
-                <div class="panel__svg">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g opacity="0.4">
-                            <path d="M9 5L1 5" stroke="#1C1D22" stroke-width="2" stroke-linecap="round"></path>
-                            <path d="M5 9L5 1" stroke="#1C1D22" stroke-width="2" stroke-linecap="round"></path>
-                        </g>
-                    </svg>
+                <div>
+                    <p class="panel__eyebrow">Workspace</p>
+                    <h2 class="panel__title">Projects</h2>
                 </div>
+                <button type="button" class="panel-action-btn panel-add-project-btn" aria-label="Add project" aria-expanded="false" aria-controls="project-create-form">
+                    <svg width="14" height="14" viewBox="0 0 10 10" fill="none"><path d="M9 5H1M5 1v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
             </div>
 
-            <div class="manage-list">
-                <div class="manage-list__wrapper manage-list--active">
-                    <h3 class="manage-list__title">Project</h3>
-                    <span class="chevron-right"></span>
+            <div class="projects-panel">
+                <ul class="project-list" id="project-list">
+                    <li class="project-item project-link project-item--all is-active" data-id="0" data-url="{% url 'task:project_tasks' 0 %}">
+                        <div class="project-item__main">
+                            <span class="project-item__icon" aria-hidden="true">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-6l-2-2H5a2 2 0 0 0-2 2z"/></svg>
+                            </span>
+                            <div class="project-item__text">
+                                <span class="project-item__name">All projects</span>
+                                <span class="project-item__meta" data-project-count>{{ projects|length|default:0 }} project{% if projects|length != 1 %}s{% endif %}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% for pj in projects %}
+                    <li class="project-item project-link" data-id="{{ pj.id }}" data-url="{% url 'task:project_tasks' pj.id %}">
+                        <div class="project-item__main">
+                            <span class="project-item__dot" aria-hidden="true"></span>
+                            <span class="project-item__name">{{ pj.title }}</span>
+                        </div>
+                        <div class="project-item__actions">
+                            <button type="button" class="project-item__btn project-item__btn--edit" aria-label="Rename project">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                            </button>
+                            <button type="button" class="project-item__btn project-item__btn--delete" aria-label="Delete project">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M14 6V4a2 2 0 0 0-2-2h0a2 2 0 0 0-2 2v2"/></svg>
+                            </button>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="project-create" id="project-create-form" hidden>
+                    <div class="project-create__header">
+                        <span class="project-create__icon" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                        </span>
+                        <span class="project-create__title">New project</span>
+                    </div>
+                    <input type="text" id="project-create-input" class="project-create__input" placeholder="Enter project name…" maxlength="100" autocomplete="off">
+                    <div class="project-create__actions">
+                        <button type="button" class="project-create__cancel" data-action="cancel-project-create">Cancel</button>
+                        <button type="button" class="project-create__submit" id="project-create-submit">Create</button>
+                    </div>
                 </div>
-                <div class="manage-list__content manage-list__content--active">
-                    <ul class="status-task">
-                        <li class="status-project__item project-link" data-id="0" data-url="{% url 'task:project_tasks' 0 %}"><span
-                                class="status-project__item--active">All projects ({{ projects|length | default:'0' }})</span></li>
-                        {% for pj in projects %}
-                        	<li class="status-project__item project-link" data-id="{{ pj.id }}" data-url="{% url 'task:project_tasks' pj.id %}"><span class="">{{ pj.title }}</span></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="manage-list__wrapper">
-                    <h3 class="manage-list__title">Tasks</h3>
-                    <span class="chevron-right"></span>
-                </div>
-                <div class="manage-list__content">
-                    <ul class="status-task">
-                        <li class="status-task__item"><span class="status-task__item--active">All tasks (11)</span>
-                        </li>
-                        <li class="status-task__item"><span class="">To do (4)</span></li>
-                        <li class="status-task__item"><span class="">In progress (4)</span></li>
-                    </ul>
+
+                <div class="project-create project-edit" id="project-edit-form" hidden>
+                    <div class="project-create__header">
+                        <span class="project-create__icon project-edit__icon" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                        </span>
+                        <span class="project-create__title">Rename project</span>
+                    </div>
+                    <input type="text" id="project-edit-input" class="project-create__input" placeholder="Enter project name…" maxlength="100" autocomplete="off">
+                    <div class="project-create__actions">
+                        <button type="button" class="project-create__cancel" data-action="cancel-project-edit">Cancel</button>
+                        <button type="button" class="project-create__submit" id="project-edit-submit">Save</button>
+                    </div>
                 </div>
             </div>
         </div>
-        
     </div>
+
     <div class="panel__content" id="panel-account">
-        <form action="" class="form-panel-account" id="account-form">
-            <div class="panel-account__header">
-                <h3 class="panel-account__title">Account</h3>
+        <form action="" class="form-panel-account account-panel" id="account-form"
+              data-avatar-url="{% url 'account:update_avatar' %}"
+              data-update-url="{% url 'account:update_user' %}"
+              data-refresh-url="{% url 'account:account' %}">
+            {% csrf_token %}
+
+            <div class="account-panel__head">
+                <p class="panel__eyebrow">Profile</p>
+                <h3 class="account-panel__title">Account settings</h3>
             </div>
 
-            <div class="panel-account">
-                <div class="avatar">
+            <div class="account-hero">
+                <div class="account-hero__banner" aria-hidden="true"></div>
+                <div class="account-avatar-wrap account-hero__avatar">
                     {% if user.photo %}
-                        <img src="{{ user.photo.url }}" class="panel-account__img" id="account-avatar">
+                    <img src="{{ user.photo.url }}" class="panel-account__img" id="account-avatar" alt="Profile photo" decoding="async" loading="eager">
                     {% else %}
-                        <img src="{% static 'images/user.png' %}" class="panel-account__img" id="account-avatar">
+                    <img src="{% static 'images/svg_icon/user-icon.svg' %}" class="panel-account__img panel-account__img--placeholder" id="account-avatar" alt="Profile photo" decoding="async">
                     {% endif %}
-                    <button type="button" class="avatar__edit" id="avatar-edit-btn" aria-label="Edit avatar">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 20h9"/>
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                        </svg>
+                    <button type="button" class="avatar__edit" id="avatar-edit-btn" aria-label="Change profile photo">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                     </button>
-                    <input type="file" id="avatar-file" accept="image/*" style="display:none">
+                    <input type="file" id="avatar-file" accept="image/*" hidden>
                 </div>
-                <div class="panel-account__quick">
-                    <a href="{% url 'account:password_change' %}" class="panel-account__change">Change password</a>
-                    </button>
+                <div class="account-hero__identity">
+                    <p class="account-hero__name" id="account-hero-name">{{ current_user.first_name }} {{ current_user.last_name }}</p>
+                    <p class="account-hero__email" id="account-hero-email">{{ current_user.email }}</p>
                 </div>
             </div>
 
-            <div class="account-field">
-                <label class="labe__account" for="name">Name</label>
-                <span class="account-value" data-field="name">{{ current_user.first_name }}</span>
-                <input type="text" class="panel-account__input account-input" id="name" name="name"
-                       placeholder="Enter name" style="display:none">
-                <div class="field-message" id="name-message"></div>
+            <div class="account-section">
+                <p class="account-section__label">Security</p>
+                <a href="{% url 'account:password_change' %}" class="account-action panel-account__change">
+                    <span class="account-action__icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </span>
+                    <span class="account-action__body">
+                        <span class="account-action__title">Change password</span>
+                        <span class="account-action__desc">Update your login credentials</span>
+                    </span>
+                    <svg class="account-action__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
             </div>
 
-            <div class="account-field">
-                <label class="labe__account" for="lastname">Last Name</label>
-                <span class="account-value" data-field="lastname">{{ current_user.last_name|default:'' }}</span>
-                <input type="text" class="panel-account__input account-input" id="lastname" name="lastname"
-                       placeholder="Enter last name" style="display:none">
+            <div class="account-section">
+                <p class="account-section__label">Personal information</p>
+
+                <div class="account-fields">
+                    <div class="account-field">
+                        <div class="account-field__main">
+                            <span class="account-field__icon" aria-hidden="true">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </span>
+                            <div class="account-field__body">
+                                <label class="labe__account" for="name">Name</label>
+                                <span class="account-value" data-field="name">{{ current_user.first_name }}</span>
+                                <input type="text" class="panel-account__input account-input" id="name" name="name" placeholder="Enter name">
+                            </div>
+                        </div>
+                        <div class="field-message" id="name-message"></div>
+                    </div>
+
+                    <div class="account-field">
+                        <div class="account-field__main">
+                            <span class="account-field__icon" aria-hidden="true">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </span>
+                            <div class="account-field__body">
+                                <label class="labe__account" for="lastname">Last name</label>
+                                <span class="account-value" data-field="lastname">{{ current_user.last_name|default:'' }}</span>
+                                <input type="text" class="panel-account__input account-input" id="lastname" name="lastname" placeholder="Enter last name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="account-field">
+                        <div class="account-field__main">
+                            <span class="account-field__icon" aria-hidden="true">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>
+                            </span>
+                            <div class="account-field__body">
+                                <label class="labe__account" for="username">Username</label>
+                                <span class="account-value" data-field="username">{{ current_user.username|default:'' }}</span>
+                                <input type="text" class="panel-account__input account-input" id="username" name="username" placeholder="Enter username">
+                            </div>
+                        </div>
+                        <div class="field-message" id="username-message"></div>
+                    </div>
+
+                    <div class="account-field">
+                        <div class="account-field__main">
+                            <span class="account-field__icon" aria-hidden="true">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            </span>
+                            <div class="account-field__body">
+                                <label class="labe__account" for="gmail">Email</label>
+                                <span class="account-value" data-field="gmail">{{ current_user.email }}</span>
+                                <input type="email" class="panel-account__input account-input" id="gmail" name="gmail" placeholder="Enter email">
+                            </div>
+                        </div>
+                        <div class="field-message" id="gmail-message"></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="account-field">
-                <label class="labe__account" for="username">Username</label>
-                <span class="account-value" data-field="username">{{ current_user.username|default:'' }}</span>
-                <input type="text" class="panel-account__input account-input" id="username" name="username"
-                       placeholder="Enter username" style="display:none">
-                <span class="field-message" id="username-message"></span>
-            </div>
-
-            <div class="account-field">
-                <label class="labe__account" for="gmail">Email</label>
-                <span class="account-value" data-field="gmail">{{ current_user.email }}</span>
-                <input type="email" class="panel-account__input account-input" id="gmail" name="gmail"
-                       placeholder="Enter email" style="display:none">
-                <div class="field-message" id="gmail-message"></div>
-            </div>
-
-            <div class="form-success" id="form-success">
-                Saved successfully ✅
-            </div>
+            <div class="form-success" id="form-success" hidden>Saved successfully ✅</div>
 
             <div class="panel-account__footer">
-                <button type="button" class="panel-account__edit" id="account-edit-btn">Edit</button>
-                <button type="submit" class="panel-account__save" id="account-save-btn" style="display:none">Update
-                </button>
+                <button type="button" class="panel-account__edit" id="account-edit-btn">Edit profile</button>
+                <button type="submit" class="panel-account__save" id="account-save-btn" hidden>Save changes</button>
             </div>
         </form>
     </div>
+
     <div class="panel__content" id="panel-messages">
-        <div style="display:flex; align-items:center; justify-content:center; min-height: 320px; padding: 2rem; text-align:center;">
-            <div style="max-width: 360px;">
-                <div style="font-size: 2.6rem; margin-bottom: 1rem;">💬</div>
-                <h3 style="margin: 0 0 .6rem 0; font-family: 'Exo2-Bold'; font-size: 1.8rem; color: var(--text-first-color);">coming soon</h3>
-                <p style="margin: 0; font-family: 'Exo2-Medium'; font-size: 1.3rem; color: var(--text-second-color);">
-                    This section will be available soon.
-                </p>
-            </div>
+        <div class="panel-empty-state">
+            <div class="panel-empty-state__icon">💬</div>
+            <h3>Messages coming soon</h3>
+            <p>Team messaging and comments will live here.</p>
         </div>
     </div>
 </section>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
-
-    $(document).ready(function () {
-
-        $('#avatar-edit-btn').click(function () {
-            $('#avatar-file').click();
-        });
-
-
-        $('#avatar-file').on('change', function () {
-            let file = this.files[0];
-            if (!file) return;
-
-
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                $('#account-avatar').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(file);
-
-
-            let formData = new FormData();
-            formData.append('photo', file);
-            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-
-            $.ajax({
-                url: "{% url 'account:update_avatar' %}",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    if (data.photo) {
-                        $('#account-avatar').attr('src', data.photo);
-                        $('#avatar-header').attr('src', data.photo);
-                    }
-                },
-                error: function (xhr) {
-                    console.error("Error:", xhr.responseText);
-                }
-            });
-        });
-    });
-
-
-    $(document).ready(function () {
-        $('#account-save-btn').click(function (e) {
-            e.preventDefault();
-
-            let formData = {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            };
-
-            $(".account-input").each(function () {
-                let field = $(this).attr("name");
-                let value = $(this).val();
-                formData[field] = value;
-            });
-
-            $.ajax({
-                url: "{% url 'account:update_user' %}",
-                type: "POST",
-                data: formData,
-                success: function (response) {
-                    $("#form-success")
-                        .text("Saved successfully ✅")
-                        .fadeIn();
-
-                    setTimeout(function () {
-                        $("#form-success").fadeOut(500, function () {
-                            $(this).text("");
-                        });
-                    }, 3000);
-
-
-
-                    $.ajax({
-                        url: "{% url 'account:account' %}",
-                        type: "POST",
-                        data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
-                        success: function (data) {
-                            $(".account-value[data-field='name']").text(data.name);
-                            $(".account-value[data-field='lastname']").text(data.lastname || null);
-                            $(".account-value[data-field='username']").text(data.username || null);
-                            $(".account-value[data-field='gmail']").text(data.email);
-                            $(".nav__title").text("Welcome back, " + data.name + "👋");
-
-                            if (data.photo) {
-                                $("#account-avatar").attr("src", data.photo);
-                            }
-
-                            var $form = $("#account-form");
-                            $form.removeClass("edit-mode");
-                            $form.find(".account-value").css("display", "inline");
-                            $form.find(".account-input").css("display", "none");
-                            $("#account-edit-btn").text("Edit");
-                            $("#account-save-btn").css("display", "none");
-                        },
-                        error: function(xhr){
-                            console.error("Error refreshing account info:", xhr.responseText);
-                        }
-                    });
-                },
-                error: function (xhr) {
-                    const res = xhr.responseJSON;
-
-                    if (res) {
-
-                        if (res.field === "email") {
-                            const $el = $("#gmail-message");
-                            $el.removeClass("success").addClass("error").text("❌ " + res.message).show();
-                            setTimeout(function () {
-                                $el.fadeOut(500, function () {
-                                    $(this).text("").show();
-                                });
-                            }, 3000);
-                        }
-
-
-                        if (res.field === "username") {
-                            const $el = $("#username-message");
-                            $el.removeClass("success").addClass("error").text("❌ " + res.message).show();
-                            setTimeout(function () {
-                                $el.fadeOut(500, function () {
-                                    $(this).text("").show();
-                                });
-                            }, 3000);
-                        }
-
-                        if (res.field === "name") {
-                            const $el = $("#name-message");
-                            $el.removeClass("success").addClass("error").text("❌ " + res.message).show();
-                            setTimeout(function () {
-                                $el.fadeOut(500, function () {
-                                    $(this).text("").show();
-                                });
-                            }, 3000);
-                        }
-
-                    } else {
-
-                        const $el = $("#general-message");
-                        if ($el.length) {
-                            $el.removeClass("success").addClass("error").text("❌ Server error").show();
-                            setTimeout(function () {
-                                $el.fadeOut(500, function () {
-                                    $(this).text("").show();
-                                });
-                            }, 3000);
-                        } else {
-                            console.error("Server error", xhr.status, xhr.responseText);
-                        }
-                    }
-                }
-
-            });
-        });
-    });
-
-
-
-
-</script>
+<div id="panel-backdrop" class="panel-backdrop" hidden></div>

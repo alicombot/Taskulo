@@ -1,61 +1,46 @@
-{% extends  'base/index.html' %}
-{% load static %}
-{% block title %}
-	Login
-{% endblock %}
-{% block content %}
-    <main class="main" style="background:#f3f6fd; min-height: calc(100vh - 72px);">
-        <div class="container" style="display:flex; align-items:center; justify-content:center; padding:4rem 0;">
-            <div style="background:#fff; width:100%; max-width:44rem; border-radius:1.6rem; padding:2.4rem; box-shadow:0 10px 30px rgba(0,0,0,0.06);">
-                <div class="section-head" style="margin-bottom:1.5rem;">
-                    <h3 class="section-title" style="width:auto;">Welcome back</h3>
-                    <div class="section-line"></div>
-                </div>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="account-field">
-                        <label class="labe__account" for="email">Email</label>
-                        <input name="email" id="email" type="email" class="panel-account__input"
-                               placeholder="Enter your email"
-                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
-                    </div>
-                    <div class="account-field">
-                        <label class="labe__account" for="password">Password</label>
-                        <input name="password" id="password" type="password" class="panel-account__input"
-                               placeholder="Enter your password"
-                               style="display:block; background:#f9f9fb; border:.1rem solid #d3d6e4;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin:.5rem 0 1.5rem 0;">
-                        <label style="font-family: 'Exo2-SemiBold'; font-size:1.2rem; color:#1C1D22;"><input
-                                type="checkbox"
-                                style="margin-right:.5rem;">Remember
-                            me</label>
-                        <a href="{% url 'account:password_reset' %}"
-                           style="font-family: 'Exo2-SemiBold'; font-size:1.2rem; color:#775ee9;">Forgot password?</a>
-                    </div>
-                    {% if form.non_field_errors %}
-                        <div id="errorBox" class="error-box"
-                             style="display:block; background:#fee; border:1px solid #fcc; border-radius:0.8rem; padding:1.2rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
-                            <div class="error-header" style="display:flex; align-items:center; margin-bottom:0.8rem;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                     style="margin-right:0.8rem; color:#e74c3c;">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-                                          fill="currentColor"/>
-                                </svg>
-                                <h4 style="margin:0; font-size:1.4rem; color:#e74c3c;">{{ form.non_field_errors }}</h4>
-                            </div>
-                            <div id="errorMessages" class="error-messages"
-                                 style="font-size:1.2rem; color:#c0392b; line-height:1.5;">
-                                <!-- Error messages will be displayed here -->
-                            </div>
-                        </div>
-                    {% endif %}
-                    <button class="start-planing__btn" type="submit" style="width:100%;">Login</button>
-                </form>
-                <p class="section-caption" style="width:auto; text-align:center; margin-top:1.5rem;">New here? <a
-                        href="{% url 'account:sign_up' %}" style="color:#775ee9;">Create an account</a></p>
+{% extends 'registration/base_auth.html' %}
 
-            </div>
-        </div>
-    </main>
+{% block title %}Login{% endblock %}
+
+{% block auth_header %}
+<div class="auth-header">
+    <span class="auth-eyebrow">Welcome back</span>
+    <h1 class="auth-title">Sign in to Taskulo</h1>
+    <p class="auth-subtitle">Enter your credentials to access your workspace.</p>
+</div>
+{% endblock %}
+
+{% block auth_body %}
+<form method="post" class="auth-form">
+    {% csrf_token %}
+
+    <div class="auth-field">
+        <label class="auth-label" for="email">Email</label>
+        <input name="email" id="email" type="email" class="auth-input" placeholder="Enter your email" autocomplete="email">
+    </div>
+
+    <div class="auth-field">
+        <label class="auth-label" for="password">Password</label>
+        <input name="password" id="password" type="password" class="auth-input" placeholder="Enter your password" autocomplete="current-password">
+    </div>
+
+    <div class="auth-row auth-row--end">
+        <a href="{% url 'account:password_reset' %}" class="auth-link">Forgot password?</a>
+    </div>
+
+    {% if form.non_field_errors %}
+    <div id="errorBox" class="auth-alert auth-alert--error" role="alert">
+        <p>{{ form.non_field_errors }}</p>
+        <div id="errorMessages"></div>
+    </div>
+    {% endif %}
+
+    <button type="submit" class="auth-btn">Login</button>
+</form>
+{% endblock %}
+
+{% block auth_footer %}
+<p class="auth-footer">
+    New here? <a href="{% url 'account:sign_up' %}" class="auth-link">Create an account</a>
+</p>
 {% endblock %}

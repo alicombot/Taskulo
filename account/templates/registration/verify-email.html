@@ -1,59 +1,51 @@
-{% extends  'base/index.html' %}
+{% extends 'registration/base_auth.html' %}
 {% load static %}
-{% block title %}
-	Verify Email
+
+{% block title %}Verify Email{% endblock %}
+{% block auth_card_class %}auth-card--center{% endblock %}
+
+{% block auth_header %}
+<div class="auth-header auth-header--center">
+    <div class="auth-icon">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+        </svg>
+    </div>
+    <h1 class="auth-title">Verify your email</h1>
+    <p class="auth-subtitle">We've sent a 4-digit verification code to your email address. Please enter the code below to complete your registration.</p>
+    <div class="verify-email-badge" id="emailDisplay">{{ email }}</div>
+</div>
 {% endblock %}
-{% block content %}
-	    <main class="verify-container">
-        <div class="verify-card">
-            <div class="verify-icon"></div>
 
-            <h1 class="verify-title">Verify Your Email</h1>
-            <p class="verify-subtitle">
-                We've sent a 4-digit verification code to your email address. Please enter the code below to complete your registration.
-            </p>
+{% block auth_body %}
+<div class="verify-error-message auth-alert auth-alert--error hidden" id="errorMessage" role="alert">Invalid verification code. Please try again.</div>
+<div class="verify-success-message auth-alert auth-alert--success hidden" id="successMessage" role="status">Email verified successfully! Redirecting...</div>
 
-            <div class="verify-email-display" id="emailDisplay">
-                {{ email }}
-            </div>
+<div class="auth-field auth-stack">
+    <label class="auth-label auth-center" for="codeInput1">Enter verification code</label>
+    <div class="verify-code-inputs">
+        <input type="text" class="verify-code-input" id="codeInput1" maxlength="1" autocomplete="off" inputmode="numeric" aria-label="Digit 1">
+        <input type="text" class="verify-code-input" id="codeInput2" maxlength="1" autocomplete="off" inputmode="numeric" aria-label="Digit 2">
+        <input type="text" class="verify-code-input" id="codeInput3" maxlength="1" autocomplete="off" inputmode="numeric" aria-label="Digit 3">
+        <input type="text" class="verify-code-input" id="codeInput4" maxlength="1" autocomplete="off" inputmode="numeric" aria-label="Digit 4">
+    </div>
+</div>
 
-            <div class="verify-error-message" id="errorMessage">
-                Invalid verification code. Please try again.
-            </div>
+<button type="button" class="auth-btn verify-btn auth-stack" id="verifyBtn" disabled>Verify Email</button>
 
-            <div class="verify-success-message" id="successMessage">
-                Email verified successfully! Redirecting...
-            </div>
+<div class="verify-resend-section verify-resend">
+    <p class="auth-subtitle">Didn't receive the code?</p>
+    <button type="button" class="verify-resend-btn" id="resendBtn" data-remaining="{{ remaining_seconds|default:0 }}">Resend Code</button>
+    <div class="verify-countdown auth-subtitle hidden" id="countdown">
+        Resend available in <strong id="countdownTimer">01:59</strong>
+    </div>
+</div>
 
-            <div class="verify-code-container">
-                <label class="verify-code-label" for="codeInput1">Enter verification code</label>
-                <div class="verify-code-inputs">
-                    <input type="text" class="verify-code-input" id="codeInput1" maxlength="1" autocomplete="off">
-                    <input type="text" class="verify-code-input" id="codeInput2" maxlength="1" autocomplete="off">
-                    <input type="text" class="verify-code-input" id="codeInput3" maxlength="1" autocomplete="off">
-                    <input type="text" class="verify-code-input" id="codeInput4" maxlength="1" autocomplete="off">
-                </div>
-            </div>
+<p class="auth-center auth-stack">
+    <a href="{% url 'account:sign_up' %}" class="auth-link">Back to Registration</a>
+</p>
+{% endblock %}
 
-            <button class="verify-btn" id="verifyBtn" disabled>
-                Verify Email
-            </button>
-
-            <div class="verify-resend-section">
-                <p class="verify-resend-text">
-                    Didn't receive the code?
-                </p>
-                <button class="verify-resend-btn" id="resendBtn" data-remaining="{{ remaining_seconds|default:0 }}">
-                    Resend Code
-                </button>
-                <div class="verify-countdown" id="countdown" style="display: none;">
-                    Resend available in <span id="countdownTimer">01:59</span>
-                </div>
-            </div>
-
-            <a href="./register.html" class="verify-back-link">
-                Back to Registration
-            </a>
-        </div>
-    </main>
+{% block extra_js %}
+<script src="{% static 'account/js/verify-email.js' %}"></script>
 {% endblock %}
