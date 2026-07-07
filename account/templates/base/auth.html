@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskulo | {% block title %}{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/svg_icon/logo.svg' %}">
+    <script>
+        window.TaskuloTheme = (function () {
+            var KEY = 'taskulo-theme';
+
+            function resolve() {
+                var saved = localStorage.getItem(KEY);
+                if (saved === 'light' || saved === 'dark') return saved;
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            function apply(theme, persist) {
+                var dark = theme === 'dark';
+                var root = document.documentElement;
+                root.classList.toggle('dark', dark);
+                root.setAttribute('data-theme', theme);
+                if (document.body) document.body.classList.toggle('dark', dark);
+                var btn = document.getElementById('theme-toggle');
+                if (btn) {
+                    btn.setAttribute('aria-checked', dark ? 'true' : 'false');
+                    btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+                }
+                if (persist) localStorage.setItem(KEY, theme);
+            }
+
+            function toggle() {
+                var isDark = document.documentElement.classList.contains('dark');
+                apply(isDark ? 'light' : 'dark', true);
+            }
+
+            function init() {
+                apply(resolve(), false);
+            }
+
+            apply(resolve(), false);
+
+            return { init: init, toggle: toggle, apply: apply };
+        })();
+    </script>
+    <style>{% include 'includes/account-styles.css' %}</style>
+    <link rel="stylesheet" href="{% static 'account/css/account.css' %}?v=20250733">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            corePlugins: { preflight: false },
+        };
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="account-app">
+{% block body %}{% endblock %}
+<script>window.TaskuloTheme.init();</script>
+<script src="{% static 'account/js/account-utils.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

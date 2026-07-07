@@ -1,0 +1,128 @@
+<div class="task task--adv task-card task-card--{{ column_accent|default:'todo' }}"
+     draggable="true"
+     data-id="{{ task.id }}"
+     data-status="{{ task.status }}"
+     data-title="{{ task.title }}"
+     data-description="{{ task.description|default:'' }}"
+     data-due-date="{{ task.due_date|date:'Y-m-d' }}"
+     data-priority="{{ task.priority }}"
+     data-edit-url="{% url 'task:update_task' task.id %}"
+     data-delete-url="{% url 'task:delete_task' task.id %}">
+
+    <div class="task-card__accent"></div>
+
+    {% if not current_project %}
+    {% if task.project %}
+    <div class="task-card__project" title="Project: {{ task.project.title }}">
+        <span class="task-card__project-icon" aria-hidden="true">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-6l-2-2H5a2 2 0 0 0-2 2z"/></svg>
+        </span>
+        <span class="task-card__project-name">{{ task.project.title }}</span>
+    </div>
+    {% else %}
+    <div class="task-card__project task-card__project--none" title="No project">
+        <span class="task-card__project-icon" aria-hidden="true">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>
+        </span>
+        <span class="task-card__project-name">No project</span>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <div class="task__title task-card__header">
+        {% if show_check %}
+        <button type="button"
+                class="task__title--check task-card__check"
+                title="{% if check_label %}{{ check_label }}{% else %}Update status{% endif %}"
+                data-next-status="{{ next_status }}"
+                aria-label="{% if check_label %}{{ check_label }}{% else %}Update status{% endif %}">
+            <svg class="task-card__check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
+        </button>
+        {% endif %}
+        <h3 class="task-title task-card__title"{% if next_status %} title="Move to {{ next_status }}"{% endif %}>{{ task.title }}</h3>
+        <div class="task-menu-anchor">
+            <button type="button"
+                    class="task__title--icon task-card__menu no-select"
+                    data-task-menu="{{ task.id }}"
+                    aria-label="Task options"
+                    aria-haspopup="menu"
+                    aria-expanded="false"
+                    data-edit-url="{% url 'task:update_task' task.id %}"
+                    data-task-id="{{ task.id }}">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <circle cx="8" cy="3" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="8" cy="13" r="1.5"/>
+                </svg>
+            </button>
+            <div id="task-options-{{ task.id }}" class="task-options" data-task-id="{{ task.id }}" role="menu">
+                <div class="task-options__group">
+                    <p class="task-options__label">Move to</p>
+                    {% if task.status != 'todo' %}
+                    <button type="button" class="task-option task-option--move" data-action="move" data-status="todo" role="menuitem">
+                        <span class="task-option__dot task-option__dot--todo"></span>
+                        To do
+                    </button>
+                    {% endif %}
+                    {% if task.status != 'in progress' %}
+                    <button type="button" class="task-option task-option--move" data-action="move" data-status="in progress" role="menuitem">
+                        <span class="task-option__dot task-option__dot--progress"></span>
+                        In progress
+                    </button>
+                    {% endif %}
+                    {% if task.status != 'done' %}
+                    <button type="button" class="task-option task-option--move" data-action="move" data-status="done" role="menuitem">
+                        <span class="task-option__dot task-option__dot--done"></span>
+                        Done
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="task-options__divider" role="separator"></div>
+                <button type="button" class="task-option" data-action="edit" role="menuitem">Edit</button>
+                <button type="button" class="task-option task-option--danger" data-action="delete" role="menuitem">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    {% if task.description %}
+    <div class="task__description task-card__desc">{{ task.description }}</div>
+    {% endif %}
+
+    <div class="task-card__meta">
+        {% if task.priority == 'high' %}
+        <span class="task-card__badge task-card__badge--high">High</span>
+        {% elif task.priority == 'low' %}
+        <span class="task-card__badge task-card__badge--low">Low</span>
+        {% else %}
+        <span class="task-card__badge">Normal</span>
+        {% endif %}
+        {% if task.due_date %}
+        <span class="task-card__due">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            {{ task.due_date|date:"d M" }}
+        </span>
+        {% endif %}
+    </div>
+
+    <div class="task-card__progress task-card__progress--{% if task.status == 'done' %}done{% elif task.status == 'in progress' %}active{% else %}idle{% endif %}">
+        <div class="task-card__progress-top">
+            <span class="task-card__progress-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                Progress
+            </span>
+            <span class="task-card__progress-pct">{% if task.status == 'done' %}100{% elif task.status == 'in progress' %}50{% else %}0{% endif %}%</span>
+        </div>
+        <div class="task-card__progress-steps" aria-hidden="true">
+            <span class="task-card__progress-step{% if task.status == 'todo' %} is-current{% elif task.status == 'in progress' or task.status == 'done' %} is-done{% endif %}"></span>
+            <span class="task-card__progress-step{% if task.status == 'in progress' %} is-current{% elif task.status == 'done' %} is-done{% endif %}"></span>
+            <span class="task-card__progress-step{% if task.status == 'done' %} is-done{% endif %}"></span>
+        </div>
+        <p class="task-card__progress-status">
+            {% if task.status == 'done' %}Completed{% elif task.status == 'in progress' %}In progress{% else %}Not started{% endif %}
+        </p>
+    </div>
+
+    <div class="task__footer task-card__footer">
+        <div class="task__footer--date">
+            {% if task.due_date %}{{ task.due_date|date:"d M Y" }}{% else %}No due date{% endif %}
+        </div>
+    </div>
+</div>

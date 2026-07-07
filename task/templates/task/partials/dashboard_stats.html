@@ -1,0 +1,52 @@
+{% with total=todo_count|default:0|add:in_progress_count|default:0|add:done_count|default:0 %}
+<section class="dashboard-stats" aria-label="Task overview">
+    <div class="stat-card stat-card--brand">
+        <div class="stat-card__glow"></div>
+        <div class="stat-card__inner">
+            <div class="stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+            </div>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Total tasks</span>
+                <strong class="stat-card__value" id="stat-total">{{ total }}</strong>
+            </div>
+        </div>
+    </div>
+    <div class="stat-card stat-card--slate">
+        <div class="stat-card__glow"></div>
+        <div class="stat-card__inner">
+            <div class="stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </div>
+            <div class="stat-card__body">
+                <span class="stat-card__label">To do</span>
+                <strong class="stat-card__value" id="stat-todo">{{ todo_count|default:0 }}</strong>
+            </div>
+        </div>
+    </div>
+    <div class="stat-card stat-card--amber">
+        <div class="stat-card__glow"></div>
+        <div class="stat-card__inner">
+            <div class="stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div class="stat-card__body">
+                <span class="stat-card__label">In progress</span>
+                <strong class="stat-card__value" id="stat-progress">{{ in_progress_count|default:0 }}</strong>
+            </div>
+        </div>
+    </div>
+    <div class="stat-card stat-card--emerald">
+        <div class="stat-card__glow"></div>
+        <div class="stat-card__inner">
+            <div class="stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Completed</span>
+                <strong class="stat-card__value" id="stat-done">{{ done_count|default:0 }}</strong>
+            </div>
+        </div>
+    </div>
+</section>
+{% endwith %}

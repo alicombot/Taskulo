@@ -1,0 +1,68 @@
+<div class="task task--form server-task-form-wrap" id="server-task-form-{{ form_suffix }}" hidden>
+    <div class="task-form__header">
+        <div class="task-form__badge">New</div>
+        <h4>Create task</h4>
+    </div>
+    <form method="post" action="{% url 'task:create_task' %}" class="task-form" novalidate>
+        {% csrf_token %}
+        {% if project %}
+        <input type="hidden" name="project" value="{{ project.id }}">
+        {% endif %}
+        <div class="task-form__row">
+            <label class="sr-only" for="new-task-title-{{ form_suffix }}">Task title</label>
+            <input class="task-form__input" id="new-task-title-{{ form_suffix }}" name="title" type="text" placeholder="What needs to be done?" required>
+        </div>
+        <div class="task-form__row">
+            <textarea class="task-form__textarea" name="description" rows="2" placeholder="Add a short description…"></textarea>
+        </div>
+        <div class="task-form__meta">
+            <div class="task-form__field task-form__field--date">
+                <span class="task-form__field-label">Due date</span>
+                <div class="task-form__date-field" data-task-date-picker>
+                    <input type="hidden" name="due_date" class="task-form__date-value" value="">
+                    <div class="task-form__date-control">
+                        <button type="button" class="task-form__date-trigger" aria-haspopup="dialog" aria-expanded="false">
+                            <svg class="task-form__date-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                            <span class="task-form__date-text is-placeholder">Select date</span>
+                        </button>
+                        <button type="button" class="task-form__date-clear" aria-label="Clear date" hidden>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                    <div class="task-form__date-popover" hidden role="dialog" aria-label="Choose due date">
+                        <div class="calendar task-form__calendar">
+                            <div class="calendar__header">
+                                <button type="button" class="calendar__nav calendar__nav--prev" aria-label="Previous month">‹</button>
+                                <div class="calendar__title"></div>
+                                <button type="button" class="calendar__nav calendar__nav--next" aria-label="Next month">›</button>
+                            </div>
+                            <div class="calendar__weekdays"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+                            <div class="calendar__grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="task-form__field task-form__field--priority">
+                <span class="task-form__field-label">Priority</span>
+                <div class="task-form__priority" role="radiogroup" aria-label="Task priority">
+                    <label class="task-form__priority-btn task-form__priority-btn--low">
+                        <input type="radio" name="priority" value="low">
+                        <span>Low</span>
+                    </label>
+                    <label class="task-form__priority-btn task-form__priority-btn--normal">
+                        <input type="radio" name="priority" value="normal" checked>
+                        <span>Normal</span>
+                    </label>
+                    <label class="task-form__priority-btn task-form__priority-btn--high">
+                        <input type="radio" name="priority" value="high">
+                        <span>High</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="task-form__actions">
+            <button type="button" class="btn btn--ghost" data-action="cancel">Cancel</button>
+            <button type="submit" class="btn btn--primary">Create task</button>
+        </div>
+    </form>
+</div>
