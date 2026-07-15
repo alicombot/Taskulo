@@ -2,47 +2,44 @@
 
 Taskulo is a modern task and project management platform designed to help individuals and teams organize their work efficiently. It provides a clean and responsive interface for managing projects, tracking tasks, and staying updated with real-time notifications.
 
----
-
 ## Badges
 
-![Python](https://img.shields.io/badge/Python-3.x-blue) ![Django](https://img.shields.io/badge/Django-Framework-green) ![HTML5](https://img.shields.io/badge/HTML5-HTML-orange) ![CSS3](https://img.shields.io/badge/CSS3-CSS-blue) ![JavaScript](https://img.shields.io/badge/JavaScript-JS-yellow) ![Status](https://img.shields.io/badge/Status-Active-success)
-
----
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Django](https://img.shields.io/badge/Django-Framework-green)
+![HTML5](https://img.shields.io/badge/HTML5-HTML-orange)
+![CSS3](https://img.shields.io/badge/CSS3-CSS-blue)
+![JavaScript](https://img.shields.io/badge/JavaScript-JS-yellow)
+![Status](https://img.shields.io/badge/Status-Active-success)
 
 ## Screenshots
 
 ### 📊 Dashboard
 
----
+![Taskulo Dashboard](Screenshots/Taskulo.png)
 
 ## 🎨 Frontend Template
 
-The user interface (UI) of **Taskulo** is based on a frontend template that I designed and developed separately using **HTML, CSS, and JavaScript**.
+The user interface (UI) of **Taskulo** is based on a frontend template that **our team** designed and developed separately using **HTML, CSS, and JavaScript**.
 
 📂 **Template Repository:**
 https://github.com/alicombot/ToDo-List
 
----
-
 ## Tech Stack
 
-### **Backend**
+### Backend
 
 * Python
 * Django
 
-### **Database**
+### Database
 
 * SQLite / PostgreSQL
 
-### **Frontend**
+### Frontend
 
 * HTML
 * CSS
 * JavaScript
-
----
 
 ## Features
 
@@ -57,8 +54,6 @@ https://github.com/alicombot/ToDo-List
 * 🔔 Notifications for task status changes
 * 🎨 Modern and responsive user interface
 
----
-
 ## Planned Features
 
 * 🔌 Dedicated REST API for external integrations
@@ -68,8 +63,6 @@ https://github.com/alicombot/ToDo-List
 * 🧠 AI-powered task management assistant
 * 💬 Create tasks using natural language conversations
 * 📊 Intelligent task analysis and categorization
-
----
 
 ## Installation
 
@@ -132,8 +125,6 @@ Open your browser and visit:
 http://127.0.0.1:8000/
 ```
 
----
-
 ## Usage
 
 * Create a new account and verify your email
@@ -143,15 +134,11 @@ http://127.0.0.1:8000/
 * Track task progress and status
 * Receive notifications for task updates
 
----
-
 ## Environment Variables
 
 This project uses environment variables to manage sensitive settings.
 
 Create a `.env` file and configure your Django settings accordingly (such as `SECRET_KEY`, `DEBUG`, and database credentials).
-
----
 
 ## Roadmap
 
@@ -161,14 +148,10 @@ Create a `.env` file and configure your Django settings accordingly (such as `SE
 * 👥 Team collaboration features
 * 📊 Advanced analytics and reporting
 
----
-
 ## Authors
 
 * [@amirreza4602](https://github.com/amirreza4602)
 * [@alicombot](https://github.com/alicombot)
-
----
 
 ## License
 
