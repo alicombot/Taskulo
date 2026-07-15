@@ -6,11 +6,7 @@ Taskulo is a modern task and project management platform designed to help indivi
 
 ## Badges
 
-
-
-
-
-\
+![Python](https://img.shields.io/badge/Python-3.x-blue) ![Django](https://img.shields.io/badge/Django-Framework-green) ![HTML5](https://img.shields.io/badge/HTML5-HTML-orange) ![CSS3](https://img.shields.io/badge/CSS3-CSS-blue) ![JavaScript](https://img.shields.io/badge/JavaScript-JS-yellow) ![Status](https://img.shields.io/badge/Status-Active-success)
 
 ---
 
